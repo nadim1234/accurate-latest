@@ -17,6 +17,13 @@
     <artifactId>log4j</artifactId>
     <version>1.2.17</version>
 </dependency>
+<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>5.6.5.Final</version>
+</dependency>
+
 
 <dependency>
 <groupId>Axiware</groupId>
@@ -24,13 +31,66 @@
   <version>0.0.1-SNAPSHOT</version>
 </dependency>
 
+
+<!-- Spring dpendency -->
+
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>5.3.8</version>
+</dependency>
+ 
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context-support</artifactId>
+    <version>5.3.8</version>
+</dependency>
+ 
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>5.3.8</version>
+</dependency>
+
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>5.1.47</version>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-orm</artifactId>
+    <version>5.3.8</version>
+</dependency>
+
+<!-- struts dependency -->
+
+<dependency>
+    <groupId>org.apache.struts</groupId>
+    <artifactId>struts2-core</artifactId>
+    <version>2.3.16.3</version>
+</dependency>
+
+
+<!-- spring struts plugin -->
+
+<dependency>
+    <groupId>org.apache.struts</groupId>
+    <artifactId>struts2-spring-plugin</artifactId>
+    <version>2.3.16.3</version>
+</dependency>
+
+
+
   </dependencies>
 
   <build>
     <finalName>accurate-web</finalName>
     <pluginManagement>
     <plugins>
-      <plugin>
+    
+  <!--   <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-install-plugin</artifactId>
         <version>2.3.1</version>
@@ -41,6 +101,74 @@
           </execution>
         </executions>
       </plugin>
+       -->
+       
+       <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-war-plugin</artifactId>
+       <version>2.3</version>
+       </plugin>
+       
+       <plugin>
+       <groupId>org.apache.tomcat.maven</groupId>
+       <artifactId>tomcat9-maven-plugin</artifactId>
+       <version>2.0</version>
+       <configuration>
+       <path>/accurate-web</path>
+       </configuration>
+       </plugin>
+      
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.4</version>
+       <configuration>
+       <rulesets>
+       /rulesets/java/imports.xml/UnusedImports
+       </rulesets>
+       <excludeRoots>
+       <excludeRoot>com.domain</excludeRoot>
+       </excludeRoots>
+       </configuration>
+      </plugin>
+      
+      <plugin>
+      	<groupId>org.codehaus.mojo</groupId>
+      	<artifactId>buildnumber-maven-plugin</artifactId>
+      	<version>1.1</version>
+      	<executions>
+      	<execution>
+      	<phase>validate</phase>
+      	<goals>
+      	<goal>
+      	create
+      	</goal>
+      	</goals>
+      	</execution>
+      	</executions>
+      	
+      	<configuration>
+      	<doCheck>false</doCheck>
+      	<doUpdate>false</doUpdate>
+      	</configuration>
+      	
+      </plugin>
+      
+       <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>exec</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+      
     </plugins>
   </pluginManagement>
   </build>
@@ -53,6 +181,6 @@
   	<version>0.0.1-SNAPSHOT</version>
   	<artifactId>accurate-parent</artifactId>
   	<groupId>Axiware</groupId>
-  	<relativePath>../pom.xml</relativePath>
+  	<relativePath>../accurate-parent/pom.xml</relativePath>
   </parent>
 </project>

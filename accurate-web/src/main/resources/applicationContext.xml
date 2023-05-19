@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">  
+      <!-- Test code start -->      
+     <bean id="userAction" class="com.accurate.user.action.UserAction">
+        <property name="userService" ref="userService" />
+    <property name="user" ref="user" />
+    </bean>      
+    
+    <bean id="userService" class="com.accurate.user.service.UserService">
+        <property name="userDao" ref="userDao" />
+    </bean>      
+    
+    <bean id="userDao" class="com.accurate.user.dao.UserDao">
+    <property name="user" ref="user" />
+    </bean>
+         
+     <bean id="user" class="com.domainobj.User">
+    <property name="name" value="nadim khan"></property>  
+     </bean>     
+     
+     <!-- Test code end -->
+     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+		<list>
+		<value>jdbc.properties</value>
+		</list>
+		</property>     
+     </bean>
+     
+     <!-- DB configuration -->
+     
+     <!-- datasource -->
+     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    <property name="url" value="jdbc:mysql://localhost:3306/alien" />
+    <property name="username" value="root" />
+    <property name="password" value="" />
+	</bean>
+	
+	
+	<bean id="hibernateSessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+	<property name="dataSource" ref="dataSource" />
+	
+	<property name="packagesToScan" value="com.domainobj"></property>
+	
+	<property name="annotatedClasses">
+	<list>
+	<value>com.domainobj.Alien</value>
+	</list>
+	
+	</property>	
+	
+	<property name="hibernateProperties">
+	<props>
+		<prop key="hibernate-dialect">${hibernate.sql.dialect}</prop>
+		<prop key="hibernate.show_sql">false</prop>
+		<prop key="hibernate.format_sql">false</prop>
+		<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+		<prop key="hibernate.jdbc.fetch_size">${hibernate.jdbc.fetch_size}</prop>
+	</props>
+	</property>
+	</bean>
+	
+	
+     <!-- hibernate template -->
+     <bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+     <property name="sessionFactory" ref="hibernateSessionFactory"></property>
+     </bean>
+</beans>
