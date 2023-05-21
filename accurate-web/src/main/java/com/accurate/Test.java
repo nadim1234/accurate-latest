@@ -3,7 +3,6 @@ package com.accurate;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

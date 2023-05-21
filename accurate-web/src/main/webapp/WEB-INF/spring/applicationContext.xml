@@ -19,6 +19,7 @@
     
     <bean id="userDao" class="com.accurate.user.dao.UserDao">
     <property name="user" ref="user" />
+    <property name="hibernateUtl" ref="hibernateUtil"></property>
     </bean>
          
      <bean id="user" class="com.domainobj.User">
@@ -29,7 +30,7 @@
      <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 		<list>
-		<value>jdbc.properties</value>
+		<value>/WEB-INF/jdbc.properties</value>
 		</list>
 		</property>     
      </bean>
@@ -59,7 +60,7 @@
 	
 	<property name="hibernateProperties">
 	<props>
-		<prop key="hibernate-dialect">${hibernate.sql.dialect}</prop>
+		<prop key="hibernate.dialect">${hibernate.sql.dialect}</prop>
 		<prop key="hibernate.show_sql">false</prop>
 		<prop key="hibernate.format_sql">false</prop>
 		<prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
@@ -72,5 +73,9 @@
      <!-- hibernate template -->
      <bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
      <property name="sessionFactory" ref="hibernateSessionFactory"></property>
+     </bean>
+     
+     <bean id="hibernateUtil" class="com.accurate.user.dao.hibernateUtil">
+     	<property name="hibernateTemplate" ref="hibernateTemplate"></property>
      </bean>
 </beans>
