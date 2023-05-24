@@ -7,9 +7,6 @@ import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 
 public class hibernateUtil {
 	private HibernateTemplate hibernateTemplate;
-	
-	
-	
 	public HibernateTemplate getHibernateTemplate() {
 		return hibernateTemplate;
 	}
@@ -17,7 +14,6 @@ public class hibernateUtil {
 	public void setHibernateTemplate(HibernateTemplate hibernateTemplate) {
 		this.hibernateTemplate = hibernateTemplate;
 	}
-
 	public Session createSession() throws HibernateException{
 		return getHibernateTemplate().getSessionFactory().openSession();
 	}

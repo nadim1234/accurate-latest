@@ -4,6 +4,12 @@
 <html>
 <body>
 <h2>Hello World</h2>
-<s:textfield name="user.name"></s:textfield>
+<s:property value="invoiceDo.totalInvoiceCount"/>
+<s:form action="login" method="post">
+   <s:iterator value="invoiceList">
+    <s:property value="invoiceId"/>
+    <s:property value="invoiceNo"/>
+    </s:iterator>
+   </s:form>
 </body>
 </html>
