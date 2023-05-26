@@ -3,14 +3,25 @@ package com.invoice;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "invoice")
@@ -101,6 +112,9 @@ public class InvoiceDO {
 
 	@Column(name = "Invoice_Value")
 	BigDecimal invoiceValue;
+	
+	@Column(name = "Taxable_Value")
+	BigDecimal taxableValue;
 
 	// Transfer values start
 	Integer totalInvoiceCount;
@@ -121,9 +135,29 @@ public class InvoiceDO {
 	
 	List<InvoiceDO> pageResults=new ArrayList<InvoiceDO>();
 	
-	
-	
-	
+	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name="Invoice_Product_ID")
+	@Fetch(FetchMode.SELECT)
+	private InvoiceProductDO invoiceProductDO = new InvoiceProductDO();
+		
+	/*public Set<InvoiceProductDO> getInvoiceProductDO() {
+		return invoiceProductDO;
+	}
+
+	public void setInvoiceProductDO(Set<InvoiceProductDO> invoiceProductDO) {
+		this.invoiceProductDO.clear();
+		this.invoiceProductDO.addAll(invoiceProductDO);
+		//this.invoiceProductDO = invoiceProductDO;
+	}*/
+
+	public InvoiceProductDO getInvoiceProductDO() {
+		return invoiceProductDO;
+	}
+
+	public void setInvoiceProductDO(InvoiceProductDO invoiceProductDO) {
+		this.invoiceProductDO = invoiceProductDO;
+	}
+
 	public List<InvoiceDO> getPageResults() {
 		return pageResults;
 	}

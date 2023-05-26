@@ -1,3 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -7,7 +11,8 @@
 		<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
         <meta name="author" content="Dreamguys - Bootstrap Admin Template">
         <meta name="robots" content="noindex, nofollow">
-        <title>Dashboard - CRMS admin template</title>
+        <title>Accurate ERP - Shivansh Innovative Solution</title>
+        
 		
 		<!-- Favicon -->
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
@@ -21,23 +26,85 @@
         <!-- Feathericon CSS -->
 		<link rel="stylesheet" href="assets/css/feather.css">
 
+		<!-- Datatable CSS -->
+		<link rel="stylesheet" href="assets/css/dataTables.bootstrap4.min.css">
+
         <!--font style-->
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 		
 		<!-- Lineawesome CSS -->
         <link rel="stylesheet" href="assets/css/line-awesome.min.css">
-		
-		<!-- Chart CSS -->
-		<link rel="stylesheet" href="assets/plugins/morris/morris.css">
+
+		<link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
+		<link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
+
+        <!-- Select2 CSS -->
+		<link rel="stylesheet" href="assets/css/select2.min.css">
 
 		<!-- Theme CSS -->
         <link rel="stylesheet" href="assets/css/theme-settings.css">
 
+		<link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css">
+
 		<!-- Main CSS -->
         <link rel="stylesheet" href="assets/css/style.css" class="themecls">
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+       <script type="text/javascript">
+         
+        
+        function custNameSelected (){
+        	 var custname = document.getElementById("custnameselected").value;
+        	 console.log("called custnameseleted : "+custname);
+        	 $("#custname").val(custname);
+        	 $.ajax({
+        		url : "getCustomerAddress.action",
+        		type : "POST",
+        		data : {custName : custname},
+        		success : function (data){
+        			console.log("address data : "+data);
+        			if(data != ""){
+        			document.getElementById('invoiceFrom').innerHTML = JSON.parse(data)["invoiceFrom"];
+        			document.getElementById('invoiceTo').innerHTML = JSON.parse(data)["invoiceTo"];
+        			console.log("successfully fetched address details of customer");
+        			}else {
+        				console.log("something is wrong address got null");
+        			}
+        		},
+        		error : function (){
+        			console.log("Exception occured while fetching customer address..");
+        		}
+        	 });
+         }
+         function selectedProduct (){
+        	 var prodname = document.getElementById("selectedproduct").value;
+        	 console.log("called selectedProduct : "+prodname);
+        	 $.ajax({
+        		url : "getProductDetails.action",
+        		type : "GET",
+        		data : {"prodName" : prodname},
+        		success : function (data){
+        			console.log("successfully fetched product details ");
+        		},
+        		error : function (){
+        			console.log("Exception occured while fetching product details..");
+        		}
+        	 });
+         }
+         
+         function saveInvoice(){
+        	 console.log("calling saveInvoice method..");
+        	 var bForm = "addInvoice";
+        	 url = "./saveInvoice.action";
+        	 console.log("inside saveInvoice method.."+bForm +" and url :: "+url);
+        	 $('#'+bForm).attr("action",url);
+        	 $('#'+bForm).submit(); 
+        	 
+         }
+         
+       </script>
     </head>
-    <body >
+    <body id="skin-color" class="inter">
+		 
 		<!-- Main Wrapper -->
         <div class="main-wrapper">
 		
@@ -111,7 +178,7 @@
 					<!-- Notifications -->
 					<li class="nav-item dropdown">
 						<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-							<i class="fa fa-bell-o"></i> <span class="badge rounded-pill">3</span>
+							<i class="fa fa-bell"></i> <span class="badge rounded-pill">3</span>
 						</a>
 						<div class="dropdown-menu notifications">
 							<div class="topnav-dropdown-header">
@@ -197,7 +264,7 @@
 					<!-- Message Notifications -->
 					<li class="nav-item dropdown">
 						<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
-							<i class="fa fa-comment-o"></i> <span class="badge rounded-pill">8</span>
+							<i class="fa fa-comment"></i> <span class="badge rounded-pill">8</span>
 						</a>
 						<div class="dropdown-menu notifications">
 							<div class="topnav-dropdown-header">
@@ -337,7 +404,6 @@
 						<button class="btn" type="button"><i class="fa fa-search"></i></button>
 					</form>
 					<div id="sidebar-menu" class="sidebar-menu">
-
 						<ul>
 							<li class="nav-item nav-profile">
 				              <a href="#" class="nav-link">
@@ -358,7 +424,7 @@
 							<li class="submenu">
 								<a href="#"><i class="feather-home"></i> <span> Dashboard</span> <span class="menu-arrow"></span></a>
 								<ul class="sub-menus">
-									<li><a href="index.html" class="active">Deals Dashboard</a></li>
+									<li><a href="index.html">Deals Dashboard</a></li>
 									<li><a href="projects-dashboard.html">Projects Dashboard</a></li>
 									<li><a href="leads-dashboard.html">Leads Dashboard</a></li>
 								</ul>
@@ -388,7 +454,7 @@
 							</li>
 							<li> 
 								<a href="activities.html"><i class="feather-calendar"></i> <span>Activities</span></a>
-							</li>							
+							</li>
 							<li class="submenu">
 								<a href="#"><i class="feather-grid"></i> <span> Blogs</span>
 									<span class="menu-arrow"></span>
@@ -403,9 +469,9 @@
 							<li class="submenu">
 								<a href="#"><i class="feather-clipboard"></i> <span>  Invoices </span> <span class="menu-arrow"></span></a>
 								<ul class="sub-menus">
-									<li><a href="invoices.action" >Invoices List</a></li>
+									<li><a href="invoices.html" >Invoices List</a></li>
 									<li><a href="invoice-grid.html" >Invoices Grid</a></li>
-									<li><a href="loadAddInvoice.action">Add Invoices</a></li>
+									<li><a href="add-invoice.html" class="active">Add Invoices</a></li>
 									<li><a href="edit-invoice.html">Edit Invoices</a></li>
 									<li><a href="view-invoice.html">Invoices Details</a></li>
 									<li><a href="invoices-settings.html">Invoices Settings</a></li>
@@ -417,7 +483,6 @@
 							<li> 
 								<a href="settings.html"><i class="feather-settings"></i> <span>Settings</span></a>
 							</li>
-							
 							<li class="menu-title"> 
 								<span>Pages</span>
 							</li>
@@ -444,7 +509,7 @@
 							</li>
 							<li> 
 								<a href="components.html"><i class="feather-layout"></i> <span>Components</span></a>
-							</li>							
+							</li>
 							<li class="submenu">
 								<a href="#"><i class="feather feather-box"></i> <span>Elements </span> <span class="menu-arrow"></span></a>
 								<ul class="sub-menus">
@@ -499,7 +564,7 @@
 								<a href="#"><i class="feather-credit-card"></i> <span> Forms </span> <span class="menu-arrow"></span></a>
 								<ul class="sub-menus">
 									<li><a href="form-basic-inputs.html">Basic Inputs </a></li>
-									<li><a href="form-input-groups.html" >Input Groups </a></li>
+									<li><a href="form-input-groups.html">Input Groups </a></li>
 									<li><a href="form-horizontal.html">Horizontal Form </a></li>
 									<li><a href="form-vertical.html"> Vertical Form </a></li>
 									<li><a href="form-mask.html"> Form Mask </a></li>
@@ -546,115 +611,598 @@
 			<!-- /Sidebar -->
 			
 			<!-- Page Wrapper -->
-            <div class="page-wrapper">
-                <div class="content container-fluid">
-
+			<div class="page-wrapper">
+				<div class="content container-fluid">
+			
 					<!-- Page Header -->
-					<div class="crms-title row bg-white mb-4">
-                		<div class="col">
-                			<h3 class="page-title">
-			                <span class="page-title-icon bg-gradient-primary text-white me-2">
-			                  <i class="la la-table"></i>
-			                </span> <span>Deals Dashboard</span></h3>
-                		</div>
-                		<div class="col text-end">
-                			<ul class="breadcrumb bg-white float-end m-0 ps-0 pe-0">
-								<li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-								<li class="breadcrumb-item active">Deals Dashboard</li>
-							</ul>
-                		</div>
-                	</div>
-                	
+					<div class="page-header invoices-page-header">
+						<div class="row align-items-center">
+							<div class="col">
+								<ul class="breadcrumb invoices-breadcrumb">
+									<li class="breadcrumb-item invoices-breadcrumb-item">
+										<a href="invoices.html">
+											<i class="fa fa-chevron-left"></i> Back to Invoice List
+										</a>
+									</li>
+								</ul>
+							</div>
+							<div class="col-auto">
+								<div class="invoices-create-btn">
+									<a class="invoices-preview-link" href="#" data-bs-toggle="modal" data-bs-target="#invoices_preview"><i class="fa fa-eye"></i> Preview</a>
+									<a  href="#" data-bs-toggle="modal" data-bs-target="#delete_invoices_details" class="btn delete-invoice-btn">
+										Delete Invoice
+									</a>
+									<a href="#" data-bs-toggle="modal" data-bs-target="#save_invocies_details" class="btn save-invoice-btn">
+										Save Draft
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
 					<!-- /Page Header -->
+					<s:form method="post" id="addInvoice" enctype="multipart/form-data">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="card invoices-add-card">
+								<div class="card-body">
+									<form action="#" class="invoices-form">
+										<div class="invoices-main-form">
+											<div class="row">
+												<div class="col-xl-4 col-md-6 col-sm-12 col-12">
+													<div class="form-group">
+														<label>Customer Name</label>
+														<div class="form-group">
+														     <input type="hidden" name="invoiceDO.customerName" id="custname"/>         
+															 <select id="custnameselected" onchange ="custNameSelected()" class="select ">
+																<s:iterator value="customerList">
+                                                                  <option> <s:property /> </option>
+															    </s:iterator>
+															 </select>
+														</div>
+														
+													</div>
+													<div class="form-group">
+														<label>Po Number</label>
+														<input class="form-control" type="text" placeholder="Enter Reference Number" name="invoiceDO.poNo">
+													</div>
+												</div>
+												<div class="col-xl-5 col-md-6 col-sm-12 col-12">
+													<h4 class="invoice-details-title">Invoice details</h4>
+													<div class="invoice-details-box">
+														<div class="invoice-inner-head">
+															<span>Invoice No. <a href="view-invoice.html"><s:property value="invoiceDO.invoiceNo"/></a></span>
+														</div>
+														<div class="invoice-inner-footer">
+															<div class="row align-items-center">
+																<div class="col-lg-6 col-md-6">
+																	<div class="invoice-inner-date">
+																		<span>
+																			Date <input class="form-control datetimepicker" type="text" name="invoiceDO.invoiceDate" 
+																			value="<s:property value="invoiceDO.invoiceDate"/>"
+																			 placeholder="<s:property value="invoiceDO.invoiceDate"/>">
+																		</span>
+																	</div>
+																</div>
+																<div class="col-lg-6 col-md-6">
+																	<div class="invoice-inner-date invoice-inner-datepic">
+																		<span>
+																			Due Date <input class="form-control datetimepicker" type="text" 
+																			 placeholder="Select" name="invoiceDO.dueDate">
+																		</span>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-xl-3 col-md-12 col-sm-12 col-12">
+													<div class="inovices-month-info">
+														<div class="form-group mb-0">
+															<label class="custom_check w-100">
+																<input type="checkbox" id="enableTax" name="invoice">
+																<span class="checkmark"></span> Enable tax
+															</label>
+															<label class="custom_check w-100">
+																<input type="checkbox" id="chkYes" name="invoice">
+																<span class="checkmark"></span> Recurring Invoice
+															</label>
+														</div>
+														<div id="show-invoices">
+															<div class="row">
+																<div class="col-md-6">
+																	<div class="form-group">
+																		<select class="select">
+																			<option>By month</option>
+																			<option>March</option>
+																			<option>April</option>
+																			<option>May</option>
+																			<option>June</option>
+																			<option>July</option>
+																		</select>
+																	</div>
+																</div>
+																<div class="col-md-6">
+																	<div class="form-group">
+																		<input class="form-control" type="text" placeholder="Enter Months">
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="invoice-item">
+											<div class="row">
+												<div class="col-xl-4 col-lg-6 col-md-6">
+													<div class="invoice-info">
+														<strong class="customer-text">Invoice From <a class="small" href="edit-invoice.html">Edit Address</a></strong>
+														<input type="hidden" name="invoiceDO.BillingAddress" id="invoiceFromHiddenId"/>
+														<p id="invoiceFrom" class="invoice-details invoice-details-two">
+															Darren Elder <br>
+															806  Twin Willow Lane, Old Forge,<br>
+															Newyork, USA <br>
+														</p>
+													</div>
+												</div>
+												<div class="col-xl-4 col-lg-6 col-md-6">
+													<div class="invoice-info">
+														<strong class="customer-text">Invoice To</strong>
+														<input type="hidden" name="invoiceDO.shippingAddress" id="invoiceToHiddenId"/>
+														<p id="invoiceTo" class="invoice-details invoice-details-two">
+															Walter Roberson <br>
+															299 Star Trek Drive, Panama City, <br>
+															Florida, 32405, USA <br>
+														</p>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="invoice-add-table">
+											<h4>Item Details</h4>
+											<div class="table-responsive">
+												<table class="table table-striped table-nowrap  mb-0 no-footer add-table-items">
+													<thead>
+														<tr>
+															<th>Items</th>
+															<th>Category</th>
+															<th>Quantity</th>
+															<th>Price</th>
+															<th>Amount</th>
+															<th>Discount</th>
+															<th>Actions</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr class="add-row">
+															<td>
+																<div class="form-group">
+																  <input type="hidden" id="productName" name="invoiceDO.invoiceProductDO.invoiceProductId" />
+																  <input type="hidden" id="productName" name="invoiceDO.invoiceProductDO.productName" />
+																		<select class="select" id="selectedproduct" onchange="selectedProduct();">
+																			
+																			<s:iterator value="prodList">
+                                                                            <option> <s:property /> </option>
+																	         </s:iterator>
+																		</select>
+																	</div>
+															</td>
+															<td>
+																<input type="text" name="invoiceDO.invoiceProductDO.productDescription" class="form-control">
+															</td>
+															<td>
+																<input type="text" name="invoiceDO.invoiceProductDO.quantity" class="form-control">
+															</td>
+															<td>
+																<input type="text" name="invoiceDO.invoiceProductDO.rate" class="form-control">
+															</td>
+															<td>
+																<input type="text" name="invoiceDO.invoiceProductDO.amount" class="form-control">
+															</td>
+															<td>
+																<input type="text" name="invoiceDO.invoiceProductDO.discount" class="form-control">
+															</td>
+															<td class="add-remove text-end">
+																<a href="javascript:void(0);" class="add-btns me-2"><i class="fas fa-plus-circle"></i></a> 
+																<a href="#" class="copy-btn me-2"><i class="fas fa-copy"></i></a>
+																<a href="javascript:void(0);" class="remove-btn"><i class="fa fa-trash-alt"></i></a>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-7 col-md-6">
+												<div class="invoice-fields">
+													<h4 class="field-title">More Fields</h4>
+													<div class="field-box">
+														<p>Payment Details</p>
+														<a class="btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#bank_details"><i class="fas fa-plus-circle me-2"></i>Add Bank Details</a>
+													</div>
+												</div>
+												<div class="invoice-faq">
+													<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+														<div class="faq-tab">
+															<div class="panel panel-default">
+																<div class="panel-heading" role="tab" id="headingTwo">
+																	<p class="panel-title">
+																		<a class="collapsed" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+																		<i class="fas fa-plus-circle me-1"></i> Add Terms & Conditions
+																		</a>
+																	</p>
+																</div>
+																<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" data-bs-parent="#accordion">
+																	<div class="panel-body">
+																		<textarea class="form-control"></textarea>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="faq-tab">
+															<div class="panel panel-default">
+																<div class="panel-heading" role="tab" id="headingThree">
+																	<p class="panel-title">
+																		<a class="collapsed" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+																		<i class="fas fa-plus-circle me-1"></i> Add Notes
+																		</a>
+																	</p>
+																</div>
+																<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree" data-bs-parent="#accordion">
+																	<div class="panel-body">
+																		<textarea class="form-control"></textarea>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-lg-5 col-md-6">
+												<div class="invoice-total-card">
+													<h4 class="invoice-total-title">Summary</h4>
+													<div class="invoice-total-box">
+														<div class="invoice-total-inner">
+															<p>Taxable Amount <input type="text" class="form-control" name="invoiceDO.taxableValue"></p>
+															<p>Round Off 
+																<input type="checkbox" id="status_1" class="check">
+																<label for="status_1" class="checktoggles">checkbox</label> 
+																<span>$54</span>
+															</p>
+															<div class="links-info-one">
+																<div class="links-info">
+																	<div class="links-cont">
+																		<a href="#" class="service-trash">
+																		</a>
+																	</div>
+																</div>
+															</div>
+															<a href="javascript:void(0);" class="add-links1">
+																<i class="fas fa-plus-circle me-1"></i> Additional Charges
+															</a>
+															<div class="links-info-discount">
+																<div class="links-cont-discount">
+																	<a href="javascript:void(0);" class="add-links-one">
+																		<i class="fas fa-plus-circle me-1"></i> Add more Discount
+																	</a>
+																</div>
+															</div>
+														</div>
+														<div class="invoice-total-footer">
+															<h4>Total Amount <input type="text" class="form-control" name="invoiceDO.taxableValue"></h4>
+														</div>
+													</div>
+												</div>
+												<div class="upload-sign">
+													<div class="form-group service-upload">
+														<span>Upload Sign</span>
+														<input type="file" multiple>
+													</div>
+													<div class="form-group">
+														<input type="text" class="form-control" placeholder="Name of the Signatuaory">
+													</div>
+													<div class="form-group float-end mb-0">
+														<button class="btn btn-primary" onclick="saveInvoice();" type="submit">Save Invoice</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
 
-					<div class="row graphs">
-						<div class="col-md-6">
-							<div class="card h-100">
-			                  <div class="card-body">
-			                  	<h3 class="card-title">Total Lead</h3>
-			                     <canvas id="pie-chart" width="800" height="450"></canvas>
-			                  </div>
-			                </div>
-						</div>
-						<div class="col-md-6">
-							<div class="card h-100">
-			                    <div class="card-body">
-			                    	<h3 class="card-title">Products Yearly Sales</h3>
-			                      <canvas id="bar-chart-horizontal" width="800" height="450"></canvas>
-			                    </div>
-			                </div>
-						</div>
-					</div>
-					<div class="row graphs">
-						<div class="col-md-6">
-							<div class="card h-100">
-								<div class="card-body">
-			                    	<h3 class="card-title">Sales Overview</h3>
-									<div id="line-charts"></div>
-			                	</div>
-							</div>
-						</div>
-						<div class="col-md-6">
-							
-							<div class="card h-100">
-			                    <div class="card-body">
-			                    	<h3 class="card-title">Total Sales</h3>
-			                     <div id="chart"></div>
-			                    </div>
-			                </div>
-						</div>
-					</div>
-					<div class="row graphs">
-						<div class="col-md-6"> 
-							<div class="card h-100">
-			                    <div class="card-body">
-			                      <h3 class="card-title">Yearly Projects</h3>
-			                      <canvas id="bar-chart" width="800" height="550"></canvas>
-			                    </div>
-			                </div>
-						</div>
-						<div class="col-md-6">
-							<div class="card h-100">
-								<div class="card-body">
-			                    	<h3 class="card-title">Total Revenue</h3>
-									<div id="bar-charts"></div>
-			                	</div>
-							</div>
-						</div>
-						
-					</div>
-
-					<div class="row graphs">
-						<div class="col-md-6 mb-0">
-							<div class="card h-100">
-								<div class="card-body">
-									<h3 class="card-title">Sales Statistics</h3>
-									<canvas id="bar-chart-grouped" width="800" height="450"></canvas>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-6 mb-0">
-							<div class="card h-100">
-								<div class="card-body">
-									<h3 class="card-title">Completed Tasks</h3>
-									<canvas id="mixed-chart" width="800" height="450"></canvas>
-								</div>
-							</div>
-						</div>
 					</div>
-					
-					
-				</div>			
+					</s:form>
+				</div>
 			</div>
 			<!-- /Page Wrapper -->
-		
+
+		    <!-- Invoices Preview Modal -->
+			<div class="modal custom-modal fade invoices-preview" id="invoices_preview" role="dialog">
+				<div class="modal-dialog modal-dialog-centered modal-xl">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="row justify-content-center">
+								<div class="col-lg-12">
+									<div class="card invoice-info-card">
+										<div class="card-body pb-0">
+											<div class="invoice-item invoice-item-one">
+												<div class="row">
+													<div class="col-md-6">
+														<div class="invoice-logo">
+															<img src="assets/img/logo.png" alt="logo">
+														</div>
+													</div>
+													<div class="col-md-6">
+														<div class="invoice-info">
+															<div class="invoice-head">
+																<h2 class="text-primary">Invoice</h2>
+																<p>Invoice Number : In983248782</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											
+											<!-- Invoice Item -->
+											<div class="invoice-item invoice-item-bg">
+												<div class="invoice-circle-img">
+													<img src="assets/img/invoice-circle1.png" alt="" class="invoice-circle1">
+													<img src="assets/img/invoice-circle2.png" alt="" class="invoice-circle2">
+												</div>
+												<div class="row">
+													<div class="col-lg-4 col-md-12">
+														<div class="invoice-info">
+															<strong class="customer-text-one">Billed to</strong>
+															<h6 class="invoice-name">Customer Name</h6>
+															<p class="invoice-details invoice-details-two">
+																9087484288 <br>
+																Address line 1, <br>
+																Address line 2 <br>
+																Zip code ,City - Country
+															</p>
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="invoice-info">
+															<strong class="customer-text-one">Invoice From</strong>
+															<h6 class="invoice-name">Company Name</h6>
+															<p class="invoice-details invoice-details-two">
+																9087484288 <br>
+																Address line 1, <br>
+																Address line 2 <br>
+																Zip code ,City - Country
+															</p>
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-12">
+														<div class="invoice-info invoice-info-one border-0">
+															<p>Issue Date : 27 Jul 2022</p>
+															<p>Due Date : 27 Aug 2022</p>
+															<p>Due Amount : $ 1,54,22 </p>
+															<p>Recurring Invoice : 15 Months</p>
+															<p class="mb-0">PO Number : 54515454</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- /Invoice Item -->
+
+											<!-- Invoice Item -->
+											<div class="invoice-item invoice-table-wrap">
+												<div class="row">
+													<div class="col-md-12">
+														<div class="table-responsive">
+															<table class="invoice-table table table-center mb-0">
+																<thead>
+																	<tr>
+																		<th>Description</th>
+																		<th>Category</th>
+																		<th>Rate/Item</th>
+																		<th>Quantity</th>
+																		<th>Discount (%)</th>
+																		<th class="text-end">Amount</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td>Dell Laptop</td>
+																		<td>Laptop</td>
+																		<td>$1,110</td>
+																		<td>2</td>
+																		<td>2%</td>
+																		<td class="text-end">$400</td>
+																	</tr>
+																	<tr>
+																		<td>HP Laptop</td>
+																		<td>Laptop</td>
+																		<td>$1,500</td>
+																		<td>3</td>
+																		<td>6%</td>
+																		<td class="text-end">$3,000</td>
+																	</tr>
+																	<tr>
+																		<td>Apple Ipad</td>
+																		<td>Ipad</td>
+																		<td>$11,500</td>
+																		<td>1</td>
+																		<td>10%</td>
+																		<td class="text-end">$11,000</td>
+																	</tr>
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- /Invoice Item -->
+
+											<div class="row align-items-center justify-content-center">
+												<div class="col-lg-6 col-md-6">
+													<div class="invoice-payment-box">
+														<h4>Payment Details</h4>
+														<div class="payment-details">
+															<p>Debit Card XXXXXXXXXXXX-2541 HDFC Bank</p>
+														</div>
+													</div>
+												</div>
+												<div class="col-lg-6 col-md-6">
+													<div class="invoice-total-card">
+														<div class="invoice-total-box">
+															<div class="invoice-total-inner">
+																<p>Taxable <span>$6,660.00</span></p>
+																<p>Additional Charges <span>$6,660.00</span></p>
+																<p>Discount <span>$3,300.00</span></p>
+																<p class="mb-0">Sub total <span>$3,300.00</span></p>
+															</div>
+															<div class="invoice-total-footer">
+																<h4>Total Amount <span>$143,300.00</span></h4>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="invoice-sign-box">
+												<div class="row">
+													<div class="col-lg-8 col-md-8">
+														<div class="invoice-terms">
+															<h6>Notes:</h6>
+															<p class="mb-0">Enter customer notes or any other details</p>
+														</div>
+														<div class="invoice-terms mb-0">
+															<h6>Terms and Conditions:</h6>
+															<p class="mb-0">Enter customer notes or any other details</p>
+														</div>
+													</div>
+													<div class="col-lg-4 col-md-4">
+														<div class="invoice-sign text-end">
+															<img class="img-fluid d-inline-block" src="assets/img/signature.png" alt="sign">
+															<span class="d-block">Harristemp</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Invoices Preview Modal -->
+
+		    <!-- Add Invoices Modal -->
+			<div class="modal custom-modal fade bank-details" id="bank_details" role="dialog">
+				<div class="modal-dialog modal-dialog-centered modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div class="form-header text-start mb-0">
+								<h4 class="mb-0">Add Bank Details</h4>
+							</div>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div class="bank-inner-details">
+								<div class="row">
+									<div class="col-lg-6 col-md-6">
+										<div class="form-group">
+											<label>Account Holder Name</label>
+											<input type="text" class="form-control" placeholder="Add Name">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6">
+										<div class="form-group">
+											<label>Bank name</label>
+											<input type="text" class="form-control" placeholder="Add Bank name">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6">
+										<div class="form-group">
+											<label>IFSC Code</label>
+											<input type="text" class="form-control">
+										</div>
+									</div>
+									<div class="col-lg-6 col-md-6">
+										<div class="form-group">
+											<label>Account Number</label>
+											<input type="text" class="form-control">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<div class="bank-details-btn">
+								<a href="javascript:void(0);" data-bs-dismiss="modal" class="btn bank-cancel-btn me-2">Cancel</a>
+								<a href="javascript:void(0);" class="btn bank-save-btn">Save Item</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Add Invoices Modal -->
+
+			<!-- Delete Invoices Modal -->
+			<div class="modal custom-modal fade" id="delete_invoices_details" role="dialog">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="form-header">
+								<h3>Delete Invoice Details</h3>
+								<p>Are you sure want to delete?</p>
+							</div>
+							<div class="modal-btn delete-action">
+								<div class="row">
+									<div class="col-6">
+										<a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary paid-continue-btn">Delete</a>
+									</div>
+									<div class="col-6">
+										<a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary paid-cancel-btn">Cancel</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Delete Invoices Modal -->
+
+			<!-- Save Invoices Modal -->
+			<div class="modal custom-modal fade" id="save_invocies_details" role="dialog">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-body">
+							<div class="form-header">
+								<h3>Save Invoice Details</h3>
+								<p>Are you sure want to save?</p>
+							</div>
+							<div class="modal-btn delete-action">
+								<div class="row">
+									<div class="col-6">
+										<a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary paid-continue-btn">Save</a>
+									</div>
+									<div class="col-6">
+										<a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary paid-cancel-btn">Cancel</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Save Invoices Modal -->
+			
         </div>
 		<!-- /Main Wrapper -->
 
 
-		 <!--theme settings modal-->
+		<!--theme settings modal-->
 
-		 <div class="modal right fade settings" id="settings"  role="dialog" aria-modal="true">
+		<div class="modal right fade settings" id="settings"  role="dialog" aria-modal="true">
 			<div class="toggle-close">
 				  <div class="toggle" data-bs-toggle="modal" data-bs-target="#settings"><i class="fa fa-cog fa-w-16 fa-spin fa-2x"></i>
 				  </div>
@@ -823,13 +1371,11 @@
 				</div>
 			</div>
 		</div>
-
 		<!--theme settings-->
         <div class="sidebar-contact">
           	<div class="toggle" data-bs-toggle="modal" data-bs-target="#settings"><i class="fa fa-cog fa-w-16 fa-spin fa-2x"></i></div>
            
         </div>
-
 
 
 		<!-- jQuery -->
@@ -840,18 +1386,20 @@
 		
 		<!-- Slimscroll JS -->
 		<script src="assets/js/jquery.slimscroll.min.js"></script>
-		
-		
-		<!-- Chart JS -->
-		<script src="assets/js/morris.js"></script>
-		
-		<script src="assets/plugins/raphael/raphael.min.js"></script>
-		<script src="assets/js/chart.js"></script>
-		<script src="assets/js/linebar.min.js"></script>
-		<script src="assets/js/piechart.js"></script>
-		<script src="assets/js/apex.min.js"></script>
 
-	
+		<script src="assets/plugins/moment/moment.min.js"></script>
+		<script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+
+		<!-- Datatable JS -->
+		<script src="assets/js/jquery.dataTables.min.js"></script>
+		<script src="assets/js/dataTables.bootstrap4.min.js"></script>
+		<script src="assets/js/feather.min.js"></script>
+
+		<!-- Select2 JS -->
+		<script src="assets/js/select2.min.js"></script>
+		<!-- theme JS -->
+		<script src="assets/js/theme-settings.js"></script>
+		
 		<!-- theme JS -->
 		<script src="assets/js/theme-settings.js"></script>
 

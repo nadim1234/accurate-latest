@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.accurate.action.invoice.InvoiceAction;
 import com.accurate.dao.invoice.InvoiceDao;
 import com.invoice.InvoiceDO;
+import com.invoice.InvoiceProductDO;
 
 public class InvoiceService {
 
@@ -78,6 +79,74 @@ public class InvoiceService {
 		}
 		logger.info("InvoiceService::getAllInvoice() end");
 		return invoiceDO;
+	}
+	
+	public List<String> getCustometList(){
+		logger.info("InvoiceService :: getCustomerList :: start method ");
+		List<String> custList = new ArrayList<String>();
+		try {
+			custList = invoiceDao.getCustometList();
+		}catch(Exception e) {
+			logger.error("Exception in InvoiceAction::getCustomerList()==>"+e);
+		}
+		logger.info("InvoiceService :: getCustomerList :: end method ");
+		return custList;
+	}
+	
+	public List<String> getProductList(){
+		logger.info("InvoiceService :: getProductList :: start method ");
+		List<String> prodList = new ArrayList<String>();
+		try {
+			prodList = invoiceDao.getProductList();
+		}catch(Exception e) {
+			logger.error("Exception in InvoiceAction::getProductList()==>"+e);
+		}
+		logger.info("InvoiceService :: getProductList :: end method ");
+		return prodList;
+	}
+	
+	public String getCustomerAddress(String custname){
+		logger.info("InvoiceService :: getCustomerAddress :: start method ");
+		String address = "";
+		try {
+			address = invoiceDao.getCustomerAddress(custname);
+		}catch(Exception e) {
+			logger.error("Exception in InvoiceAction::getCustomerAddress()==>"+e);
+		}
+		logger.info("InvoiceService :: getCustomerAddress :: end method ");
+		return address;
+	}
+	
+	
+	public String getProductDetails(String prodname){
+		logger.info("InvoiceService :: getProductDetails :: start method ");
+		String Amount = "";
+		try {
+			Amount = invoiceDao.getProductDetails(prodname);
+		}catch(Exception e) {
+			logger.error("Exception in InvoiceAction::getProductDetails()==>"+e);
+		}
+		logger.info("InvoiceService :: getProductDetails :: end method ");
+		return Amount;
+	}
+	
+	public void saveInvoice(InvoiceDO invoiceDO){
+		logger.info("InvoiceService :: saveInvoice :: start method ");
+		
+		try {
+			InvoiceProductDO invoiceproddo = new InvoiceProductDO();
+			invoiceproddo.setInvoice_ID(1234);
+			invoiceproddo.setInvoice_No(123456);
+			invoiceproddo.setTax(12);
+			invoiceproddo.setRegisterId(12345);
+			invoiceproddo.setUserId(55555);
+			invoiceDO.setInvoiceProductDO(invoiceproddo);
+			invoiceDao.saveInvoice(invoiceDO);
+		}catch(Exception e) {
+			logger.error("Exception in InvoiceService::saveInvoice()==>"+e);
+		}
+		logger.info("InvoiceService :: saveInvoice :: end method ");
+		
 	}
 }
 
