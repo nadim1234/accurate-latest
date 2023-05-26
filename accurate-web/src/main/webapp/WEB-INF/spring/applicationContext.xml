@@ -70,7 +70,7 @@
 	<property name="dataSource" ref="dataSource" />
 	
 	<property name="packagesToScan" value="com.invoice"></property>
-	
+	<property name="mappingJarLocations" value="WEB-INF/lib/accurate-domain-0.0.1-SNAPSHOT.jar"></property>
 	<property name="annotatedClasses">
 	<list>
 	<value>com.invoice.InvoiceDO</value>

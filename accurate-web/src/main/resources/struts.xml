@@ -14,6 +14,10 @@
             <result name="success">/pages/invoices.jsp</result>
         </action>
         
+        <action name="viewInvoice" class="invoiceAction" method="viewInvoice">
+            <result name="success">/pages/view-invoice.jsp</result>
+        </action>
+        
          
     </package>
 </struts>

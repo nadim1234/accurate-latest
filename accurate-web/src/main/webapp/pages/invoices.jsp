@@ -878,7 +878,10 @@
 						</div>
 					</div>
 				</div>
-
+				<!-- form to send selected invoice id -->
+		<s:form action="viewInvoice.action" id="viewInvoiceForm" method="post">
+					<s:hidden name="selectedInvoiceId" id="selectedInvoiceId"></s:hidden>
+				</s:form>
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="card card-table">
@@ -903,9 +906,9 @@
 
 												<tr>
 													<td><label class="custom_check"> <input
-															type="checkbox" name="invoice"> <span
+															type="checkbox" name="invoice" style="top:0;left:0"> <span
 															class="checkmark"></span>
-													</label> <a href="view-invoice.html" class="invoice-link"> <s:property
+													</label> <a href="#" class="invoice-link"> <s:property
 																value="invoiceId" />
 													</a></td>
 													<td>Advertising</td>
@@ -1232,5 +1235,15 @@
 	<!-- Custom JS -->
 	<script src="assets/js/app.js"></script>
 
+	<script type="text/javascript">
+	
+	$(".invoice-link").click(function(){
+		var invoiceId=this.innerText;
+		console.log("Invoice with invoice ID:"+this.innerText+" clicked");
+		$("#selectedInvoiceId").val(invoiceId);
+		$("#viewInvoiceForm").submit();
+	})
+	
+	</script>
 </body>
 </html>

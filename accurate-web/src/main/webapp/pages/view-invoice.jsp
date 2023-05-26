@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -571,7 +574,7 @@
 												</div>
 												<div class="invoice-head">
 													<h2>Invoice</h2>
-													<p>Invoice Number : In983248782</p>
+													<p>Invoice Number : <s:property value="invoiceDO.invoiceNo"/> </p>
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -594,12 +597,12 @@
 											<div class="col-md-6">
 												<div class="invoice-info">
 													<strong class="customer-text-one">Billed to</strong>
-													<h6 class="invoice-name">Customer Name</h6>
+													<h6 class="invoice-name"><s:property value="invoiceDO.customerDO.customerName"/></h6>
 													<p class="invoice-details invoice-details-two">
-														9087484288 <br>
-														Address line 1, <br>
-														Address line 2 <br>
-														Zip code ,City - Country
+														<s:property value="invoiceDO.customerDO.contactNo"/> <br>
+														<s:property value="invoiceDO.customerDO.address1"/>, <br>
+														<s:property value="invoiceDO.customerDO.address2"/> <br>
+														<s:property value="invoiceDO.customerDO.pincode"/> ,<s:property value="invoiceDO.customerDO.city"/> - <s:property value="invoiceDO.customerDO.country"/>
 													</p>
 												</div>
 											</div>
@@ -660,30 +663,16 @@
 															</tr>
 														</thead>
 														<tbody>
-															<tr>
-																<td>Dell Laptop</td>
-																<td>Laptop</td>
-																<td>$1,110</td>
-																<td>2</td>
-																<td>2%</td>
-																<td class="text-end">$400</td>
+														<s:iterator value="invoiceDO.invoiceProductDOs">
+														<tr>
+																<td><s:property value="productDescription"/></td>
+																<td><s:property value="productName"/></td>
+																<td>$<s:property value="rate"/></td>
+																<td><s:property value="quantity"/></td>
+																<td><s:property value="discount"/>%</td>
+																<td class="text-end">$<s:property value="amount"/></td>
 															</tr>
-															<tr>
-																<td>HP Laptop</td>
-																<td>Laptop</td>
-																<td>$1,500</td>
-																<td>3</td>
-																<td>6%</td>
-																<td class="text-end">$3,000</td>
-															</tr>
-															<tr>
-																<td>Apple Ipad</td>
-																<td>Ipad</td>
-																<td>$11,500</td>
-																<td>1</td>
-																<td>10%</td>
-																<td class="text-end">$11,000</td>
-															</tr>
+														</s:iterator>
 														</tbody>
 													</table>
 												</div>

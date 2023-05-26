@@ -79,5 +79,18 @@ public class InvoiceService {
 		logger.info("InvoiceService::getAllInvoice() end");
 		return invoiceDO;
 	}
+	
+	public InvoiceDO getInvoiceById(Integer invoiceId) {
+	logger.info("InvoiceService::getInvoiceById() start");
+	InvoiceDO invoiceDO=new InvoiceDO();
+	try {
+		invoiceDO=invoiceDao.getInvoiceById(invoiceId);
+		
+	}catch(Exception e) {
+		logger.error("Exception in InvoiceAction::viewInvoice()==>"+e);
+	}
+	logger.info("InvoiceService::getInvoiceById() end");
+	return invoiceDO;
+	}
 }
 

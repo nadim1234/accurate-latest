@@ -121,9 +121,28 @@ public class InvoiceDO {
 	
 	List<InvoiceDO> pageResults=new ArrayList<InvoiceDO>();
 	
+	List<InvoiceProductDO> invoiceProductDOs=new ArrayList<InvoiceProductDO>();
+	
+	CustomerDO customerDO;
 	
 	
 	
+	public CustomerDO getCustomerDO() {
+		return customerDO;
+	}
+
+	public void setCustomerDO(CustomerDO customerDO) {
+		this.customerDO = customerDO;
+	}
+
+	public List<InvoiceProductDO> getInvoiceProductDOs() {
+		return invoiceProductDOs;
+	}
+
+	public void setInvoiceProductDOs(List<InvoiceProductDO> invoiceProductDOs) {
+		this.invoiceProductDOs = invoiceProductDOs;
+	}
+
 	public List<InvoiceDO> getPageResults() {
 		return pageResults;
 	}

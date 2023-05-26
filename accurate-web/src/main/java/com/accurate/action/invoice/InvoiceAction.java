@@ -20,6 +20,7 @@ public class InvoiceAction extends ActionSupport {
 	 */
 	private static final long serialVersionUID = 1L;
 	private InvoiceService invoiceService;
+	private Integer selectedInvoiceId;
 	
 	@Element(value=InvoiceDO.class)
 	private List<InvoiceDO> invoiceList=new ArrayList<InvoiceDO>();
@@ -27,6 +28,14 @@ public class InvoiceAction extends ActionSupport {
 	private InvoiceDO invoiceDO=new InvoiceDO();
 	
 	
+
+	public Integer getSelectedInvoiceId() {
+		return selectedInvoiceId;
+	}
+
+	public void setSelectedInvoiceId(Integer selectedInvoiceId) {
+		this.selectedInvoiceId = selectedInvoiceId;
+	}
 
 	public InvoiceDO getInvoiceDO() {
 		return invoiceDO;
@@ -67,6 +76,20 @@ public class InvoiceAction extends ActionSupport {
 			logger.error("Exception in InvoiceAction::getAllInvoice()==>"+e);
 		}
 		logger.info("InvoiceAction::getAllInvoice() end");
+		return SUCCESS;
+	}
+	
+	public String viewInvoice() {
+		
+		logger.info("InvoiceAction::viewInvoice() start");
+		try {
+			System.out.println("selectedInvoiceId:"+selectedInvoiceId);
+			invoiceDO=invoiceService.getInvoiceById(selectedInvoiceId);
+			
+		}catch(Exception e) {
+			logger.error("Exception in InvoiceAction::viewInvoice()==>"+e);
+		}
+		logger.info("InvoiceAction::viewInvoice() end");
 		return SUCCESS;
 	}
 
