@@ -25,7 +25,7 @@
         </action>
         
         <action name="getProductDetails" class="invoiceAction" method="getProductDetails">
-            <result name="success">/pages/add-Invoice.jsp</result>
+            <result type="json">/pages/add-Invoice.jsp</result>
         </action>
         
         <action name="saveInvoice" class="invoiceAction" method="saveInvoice">

@@ -118,9 +118,9 @@ public class InvoiceService {
 	}
 	
 	
-	public String getProductDetails(String prodname){
+	public int getProductDetails(String prodname){
 		logger.info("InvoiceService :: getProductDetails :: start method ");
-		String Amount = "";
+		int Amount =0;
 		try {
 			Amount = invoiceDao.getProductDetails(prodname);
 		}catch(Exception e) {

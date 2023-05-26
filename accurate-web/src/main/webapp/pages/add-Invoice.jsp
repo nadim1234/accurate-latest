@@ -83,7 +83,14 @@
         		type : "GET",
         		data : {"prodName" : prodname},
         		success : function (data){
-        			console.log("successfully fetched product details ");
+        			
+        			if(data != ""){
+        				
+            			$("#rate").val(JSON.parse(data)["productAmount"]);
+            			console.log("successfully fetched product details ");
+            			}else {
+            				console.log("something is wrong amount got null");
+            			}
         		},
         		error : function (){
         			console.log("Exception occured while fetching product details..");
@@ -640,7 +647,7 @@
 						</div>
 					</div>
 					<!-- /Page Header -->
-					<s:form method="post" id="addInvoice" enctype="multipart/form-data">
+					
 					<div class="row">
 						<div class="col-md-12">
 							<div class="card invoices-add-card">
@@ -794,7 +801,7 @@
 																<input type="text" name="invoiceDO.invoiceProductDO.quantity" class="form-control">
 															</td>
 															<td>
-																<input type="text" name="invoiceDO.invoiceProductDO.rate" class="form-control">
+																<input type="text" id="rate" name="invoiceDO.invoiceProductDO.rate" class="form-control">
 															</td>
 															<td>
 																<input type="text" name="invoiceDO.invoiceProductDO.amount" class="form-control">
@@ -913,7 +920,6 @@
 							</div>
 						</div>
 					</div>
-					</s:form>
 				</div>
 			</div>
 			<!-- /Page Wrapper -->

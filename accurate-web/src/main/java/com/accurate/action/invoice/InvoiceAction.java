@@ -125,12 +125,12 @@ public class InvoiceAction extends ActionSupport {
 		try {
 			
 			System.out.println("Successfuly called getCustomerAddress :: "+custname);
-//			String address = invoiceService.getCustomerAddress(custname);
-//			String [] addresstemp = address.split("~");
-//			System.out.println("Successfuly got address :: "+addresstemp[0]);
-//			System.out.println("Successfuly got shipping address :: "+addresstemp[1]);
-			jsonobject.put("invoiceFrom", "abcdqwert");
-			jsonobject.put("invoiceTo", "xbncbvmbcvmbc");
+			String address = invoiceService.getCustomerAddress(custname);
+			String [] addresstemp = address.split("~");
+			System.out.println("Successfuly got address :: "+addresstemp[0]);
+			System.out.println("Successfuly got shipping address :: "+addresstemp[1]);
+			jsonobject.put("invoiceFrom",addresstemp[0] );
+			jsonobject.put("invoiceTo", addresstemp[1]);
 			response.getWriter().println(jsonobject);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::getCustomerAddress()==>"+e);
@@ -148,15 +148,15 @@ public class InvoiceAction extends ActionSupport {
 		try {
 			
 			System.out.println("Successfuly called getProductDetails :: "+prodName);
-			String amount = invoiceService.getProductDetails(prodName);
+			int amount = invoiceService.getProductDetails(prodName);
 			System.out.println("Successfuly got product amount :: "+amount);
-			jsonobject.put("invoiceFrom", "0");
+			jsonobject.put("productAmount", amount);
 			response.getWriter().println(jsonobject);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::getProductDetails()==>"+e);
 		}
 		logger.info("InvoiceAction :: getProductDetails :: end getProductDetails method");
-		return SUCCESS;
+		return null;
 	}
 	
 	public String saveInvoice() {

@@ -109,7 +109,7 @@ public class InvoiceDao {
 		String address = "";
 		try {
 			Session session = hibernateUtl.createSession();
-			SQLQuery query = session.createSQLQuery("select concat(Address1,'~',ShippingAddress1) from customer where Customer_Name =:"+custname);
+			SQLQuery query = session.createSQLQuery("select concat(Address1,'~',ShippingAddress1) from customer where Customer_Name ="+'"'+custname+'"');
 			List l =  query.list();
 			address = (String) l.get(0);
 			
@@ -123,14 +123,14 @@ public class InvoiceDao {
 	
 	@SuppressWarnings("deprecation")
 	@Transactional
-	public String getProductDetails(String prodname){
+	public int getProductDetails(String prodname){
 		logger.info("InvoiceDao :: getProductDetails :: Start ");
-		String Amount = "";
+		int Amount=0;
 		try {
 			Session session = hibernateUtl.createSession();
-			SQLQuery query = session.createSQLQuery("select Rate from product where ProductName=:"+prodname);
+			SQLQuery query = session.createSQLQuery("select Rate from product where ProductName="+'"'+prodname+'"');
 			List l =  query.list();
-			Amount = (String) l.get(0);
+			Amount = (Integer) l.get(0);
 			
 		}catch(Exception e) {
 			logger.error("Exception occured in InvoiceDao :: getProductDetails ");
