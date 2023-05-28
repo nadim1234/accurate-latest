@@ -1,5 +1,6 @@
 package com.accurate.dao.invoice;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,19 +143,53 @@ public class InvoiceDao {
 	
 	@SuppressWarnings("deprecation")
 	@Transactional
-	public String saveInvoice(InvoiceDO invoiceDO){
+	public void saveInvoice(InvoiceDO invoiceDO){
 		logger.info("InvoiceDao :: getProductDetails :: Start ");
-		String Amount = "";
+		
 		try {
 			Session session = hibernateUtl.createSession();
-			//SQLQuery query = session.createSQLQuery("select Rate from product where ProductName=:"+prodname);
+			session = session.getSessionFactory().openSession();
+			session.getTransaction().begin();
+			Query query = session.createNativeQuery("Insert into invoice (Invoice_No,Invoice_Date,Customer_Name,Billing_Address"
+					+ ",City,ShippingCustomer_Name,PO_No,CGST_Value,SGST_Value,IGST_Value,Taxable_Value,Invoice_Value,Invoice_Product_ID"
+					+ ",Register_Id,User_Id,Month,Invoice_Id) values(:ivno,:invdate,:custname,:billingadd,:city,:shippingadd,:pono,:cgstno,:sgstno,:igst,:taxablevalue,"
+					+ ":invoiceval,:prodid,:regid,:userid,:month,:invoiceid)");
+					
+			query.setParameter("ivno", invoiceDO.getInvoiceNo());
+			query.setParameter("invdate", new Date(100));
+			query.setParameter("custname", invoiceDO.getCustomerName());
+			query.setParameter("billingadd", invoiceDO.getBillingAddress());
+			query.setParameter("city", invoiceDO.getCity());
+			query.setParameter("shippingadd", "abcdefg");
+			query.setParameter("pono", invoiceDO.getPoNo());
+			query.setParameter("cgstno", 9);
+			query.setParameter("sgstno",9);
+			query.setParameter("igst", 18);
+			query.setParameter("taxablevalue", invoiceDO.getTaxableValue());
+			query.setParameter("invoiceval", invoiceDO.getInvoiceValue());
+			query.setParameter("prodid", 50);
+			query.setParameter("regid", invoiceDO.getInvoiceProductDO().getRegisterId());
+			query.setParameter("userid", invoiceDO.getInvoiceProductDO().getUserId());
+			query.setParameter("month", 25);
+			query.setParameter("invoiceid", 11);
+			
+					
+					/*+'"'+invoiceDO.getInvoiceNo()+'"'+','+new Date(100)+','+'"'+invoiceDO.getCustomerName()+'"'+','+'"'+invoiceDO.getBillingAddress()+'"'+','+'"'+invoiceDO.getCity()+'"'+
+					+','+'"'+invoiceDO.getShippingAddress()+'"'+','+'"'+invoiceDO.getPoNo()+'"'+','+10+','+4+','+6+','+invoiceDO.getTaxableValue()+','+invoiceDO.getInvoiceValue()
+					+','+10+','+invoiceDO.getInvoiceProductDO().getRegisterId()+','+invoiceDO.getInvoiceProductDO().getUserId()+")");
+					
+		*/			
+					
+			query.executeUpdate();
+			session.getTransaction().commit();
 			
 			
 		}catch(Exception e) {
+			System.out.println("exception occured :"+e);
 			logger.error("Exception occured in InvoiceDao :: getProductDetails ");
 		}
 		logger.info("InvoiceDao :: getProductDetails method end");
-		return Amount;
+		
 	}
 	
 }

@@ -116,6 +116,14 @@ public class InvoiceDO {
 	@Column(name = "Taxable_Value")
 	BigDecimal taxableValue;
 
+	public BigDecimal getTaxableValue() {
+		return taxableValue;
+	}
+
+	public void setTaxableValue(BigDecimal taxableValue) {
+		this.taxableValue = taxableValue;
+	}
+
 	// Transfer values start
 	Integer totalInvoiceCount;
 

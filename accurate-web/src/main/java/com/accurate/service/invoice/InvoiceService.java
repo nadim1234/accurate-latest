@@ -134,13 +134,12 @@ public class InvoiceService {
 		logger.info("InvoiceService :: saveInvoice :: start method ");
 		
 		try {
-			InvoiceProductDO invoiceproddo = new InvoiceProductDO();
-			invoiceproddo.setInvoice_ID(1234);
-			invoiceproddo.setInvoice_No(123456);
-			invoiceproddo.setTax(12);
-			invoiceproddo.setRegisterId(12345);
-			invoiceproddo.setUserId(55555);
-			invoiceDO.setInvoiceProductDO(invoiceproddo);
+			if(invoiceDO.getTaxableValue() == null) {
+				invoiceDO.setTaxableValue(new BigDecimal(50));
+			}
+			if(invoiceDO.getTotalInvoiceValue() == null) {
+				invoiceDO.setInvoiceValue(new BigDecimal(1000));
+			}
 			invoiceDao.saveInvoice(invoiceDO);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceService::saveInvoice()==>"+e);

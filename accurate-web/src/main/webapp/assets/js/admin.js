@@ -499,7 +499,7 @@ $(function() {
     $(document).on("click",".add-links",function () {
 		var experiencecontent = '<div class="links-cont">' +
 			'<div class="service-amount1">' +
-				'<a href="#" class="service-trash"><i class="fe fe-minus-circle me-1"></i>Service Charge</a> <span>$ 4</span' +
+				'<a href="#" class="service-trash"><i class="fe fe-minus-circle me-1"></i>Service Charge</a> <span>$ 4</span>' +
 			'</div>' +
 		'</div>';
 		

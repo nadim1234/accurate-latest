@@ -49,66 +49,7 @@
 		<!-- Main CSS -->
         <link rel="stylesheet" href="assets/css/style.css" class="themecls">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-       <script type="text/javascript">
-         
-        
-        function custNameSelected (){
-        	 var custname = document.getElementById("custnameselected").value;
-        	 console.log("called custnameseleted : "+custname);
-        	 $("#custname").val(custname);
-        	 $.ajax({
-        		url : "getCustomerAddress.action",
-        		type : "POST",
-        		data : {custName : custname},
-        		success : function (data){
-        			console.log("address data : "+data);
-        			if(data != ""){
-        			document.getElementById('invoiceFrom').innerHTML = JSON.parse(data)["invoiceFrom"];
-        			document.getElementById('invoiceTo').innerHTML = JSON.parse(data)["invoiceTo"];
-        			console.log("successfully fetched address details of customer");
-        			}else {
-        				console.log("something is wrong address got null");
-        			}
-        		},
-        		error : function (){
-        			console.log("Exception occured while fetching customer address..");
-        		}
-        	 });
-         }
-         function selectedProduct (){
-        	 var prodname = document.getElementById("selectedproduct").value;
-        	 console.log("called selectedProduct : "+prodname);
-        	 $.ajax({
-        		url : "getProductDetails.action",
-        		type : "GET",
-        		data : {"prodName" : prodname},
-        		success : function (data){
-        			
-        			if(data != ""){
-        				
-            			$("#rate").val(JSON.parse(data)["productAmount"]);
-            			console.log("successfully fetched product details ");
-            			}else {
-            				console.log("something is wrong amount got null");
-            			}
-        		},
-        		error : function (){
-        			console.log("Exception occured while fetching product details..");
-        		}
-        	 });
-         }
-         
-         function saveInvoice(){
-        	 console.log("calling saveInvoice method..");
-        	 var bForm = "addInvoice";
-        	 url = "./saveInvoice.action";
-        	 console.log("inside saveInvoice method.."+bForm +" and url :: "+url);
-        	 $('#'+bForm).attr("action",url);
-        	 $('#'+bForm).submit(); 
-        	 
-         }
-         
-       </script>
+       
     </head>
     <body id="skin-color" class="inter">
 		 
@@ -652,7 +593,7 @@
 						<div class="col-md-12">
 							<div class="card invoices-add-card">
 								<div class="card-body">
-									<form action="#" class="invoices-form">
+									<!-- <form action="#"  class="invoices-form"> -->
 										<div class="invoices-main-form">
 											<div class="row">
 												<div class="col-xl-4 col-md-6 col-sm-12 col-12">
@@ -660,7 +601,7 @@
 														<label>Customer Name</label>
 														<div class="form-group">
 														     <input type="hidden" name="invoiceDO.customerName" id="custname"/>         
-															 <select id="custnameselected" onchange ="custNameSelected()" class="select ">
+															 <select id="custnameselected" onchange ="custNameSelected();" class="select ">
 																<s:iterator value="customerList">
                                                                   <option> <s:property /> </option>
 															    </s:iterator>
@@ -670,21 +611,22 @@
 													</div>
 													<div class="form-group">
 														<label>Po Number</label>
-														<input class="form-control" type="text" placeholder="Enter Reference Number" name="invoiceDO.poNo">
+														<input class="form-control" id="poNumber" type="text" placeholder="Enter Reference Number" name="invoiceDO.poNo">
 													</div>
 												</div>
 												<div class="col-xl-5 col-md-6 col-sm-12 col-12">
 													<h4 class="invoice-details-title">Invoice details</h4>
 													<div class="invoice-details-box">
 														<div class="invoice-inner-head">
-															<span>Invoice No. <a href="view-invoice.html"><s:property value="invoiceDO.invoiceNo"/></a></span>
+															<span>Invoice No. <a id="invoiceNo" href="#">
+															<input type="text" style="border:none;cursor: pointer;" name="invoiceDO.invoiceNo" value="<s:property value="invoiceDO.invoiceNo"/>"></a></span>
 														</div>
 														<div class="invoice-inner-footer">
 															<div class="row align-items-center">
 																<div class="col-lg-6 col-md-6">
 																	<div class="invoice-inner-date">
 																		<span>
-																			Date <input class="form-control datetimepicker" type="text" name="invoiceDO.invoiceDate" 
+																			Date <input class="form-control datetimepicker" id="invoiceDate" type="text" name="invoiceDO.invoiceDate" 
 																			value="<s:property value="invoiceDO.invoiceDate"/>"
 																			 placeholder="<s:property value="invoiceDO.invoiceDate"/>">
 																		</span>
@@ -693,7 +635,7 @@
 																<div class="col-lg-6 col-md-6">
 																	<div class="invoice-inner-date invoice-inner-datepic">
 																		<span>
-																			Due Date <input class="form-control datetimepicker" type="text" 
+																			Due Date <input class="form-control datetimepicker" id="invoiceDueDtae" type="text" 
 																			 placeholder="Select" name="invoiceDO.dueDate">
 																		</span>
 																	</div>
@@ -746,9 +688,7 @@
 														<strong class="customer-text">Invoice From <a class="small" href="edit-invoice.html">Edit Address</a></strong>
 														<input type="hidden" name="invoiceDO.BillingAddress" id="invoiceFromHiddenId"/>
 														<p id="invoiceFrom" class="invoice-details invoice-details-two">
-															Darren Elder <br>
-															806  Twin Willow Lane, Old Forge,<br>
-															Newyork, USA <br>
+															
 														</p>
 													</div>
 												</div>
@@ -757,9 +697,7 @@
 														<strong class="customer-text">Invoice To</strong>
 														<input type="hidden" name="invoiceDO.shippingAddress" id="invoiceToHiddenId"/>
 														<p id="invoiceTo" class="invoice-details invoice-details-two">
-															Walter Roberson <br>
-															299 Star Trek Drive, Panama City, <br>
-															Florida, 32405, USA <br>
+															
 														</p>
 													</div>
 												</div>
@@ -768,7 +706,7 @@
 										<div class="invoice-add-table">
 											<h4>Item Details</h4>
 											<div class="table-responsive">
-												<table class="table table-striped table-nowrap  mb-0 no-footer add-table-items">
+												<table id="prodTable" class="table table-striped table-nowrap  mb-0 no-footer add-table-items">
 													<thead>
 														<tr>
 															<th>Items</th>
@@ -795,24 +733,24 @@
 																	</div>
 															</td>
 															<td>
-																<input type="text" name="invoiceDO.invoiceProductDO.productDescription" class="form-control">
+																<input type="text" id="prodDesc" name="invoiceDO.invoiceProductDO.productDescription" class="form-control">
 															</td>
 															<td>
-																<input type="text" name="invoiceDO.invoiceProductDO.quantity" class="form-control">
+																<input type="text" id="quantity" name="invoiceDO.invoiceProductDO.quantity" onblur="javascript:calculateAmtonQuantity();" class="form-control">
 															</td>
 															<td>
 																<input type="text" id="rate" name="invoiceDO.invoiceProductDO.rate" class="form-control">
 															</td>
 															<td>
-																<input type="text" name="invoiceDO.invoiceProductDO.amount" class="form-control">
+																<input type="text" id="amount" name="invoiceDO.invoiceProductDO.amount" class="form-control">
 															</td>
 															<td>
-																<input type="text" name="invoiceDO.invoiceProductDO.discount" class="form-control">
+																<input type="text" id="discount" name="invoiceDO.invoiceProductDO.discount" onblur="javascript:calAmountOnDiscount();" class="form-control">
 															</td>
 															<td class="add-remove text-end">
-																<a href="javascript:void(0);" class="add-btns me-2"><i class="fas fa-plus-circle"></i></a> 
+																<a href="javascript:addproduct();" class="add-btns me-2"><i class="fas fa-plus-circle"></i></a> 
 																<a href="#" class="copy-btn me-2"><i class="fas fa-copy"></i></a>
-																<a href="javascript:void(0);" class="remove-btn"><i class="fa fa-trash-alt"></i></a>
+																<a href="#" ><i class="fa fa-trash-alt"></i></a>
 															</td>
 														</tr>
 													</tbody>
@@ -870,11 +808,11 @@
 													<h4 class="invoice-total-title">Summary</h4>
 													<div class="invoice-total-box">
 														<div class="invoice-total-inner">
-															<p>Taxable Amount <input type="text" class="form-control" name="invoiceDO.taxableValue"></p>
+															<p>Taxable Amount <span id="taxableAmount">0</span><input type="hidden" class="form-control" name="invoiceDO.taxableValue"></p>
 															<p>Round Off 
 																<input type="checkbox" id="status_1" class="check">
 																<label for="status_1" class="checktoggles">checkbox</label> 
-																<span>$54</span>
+																<span id="checkbox">$54</span>
 															</p>
 															<div class="links-info-one">
 																<div class="links-info">
@@ -896,7 +834,7 @@
 															</div>
 														</div>
 														<div class="invoice-total-footer">
-															<h4>Total Amount <input type="text" class="form-control" name="invoiceDO.taxableValue"></h4>
+															<h4>Total Amount <input type="text" id="totalamount" class="form-control" name="invoiceDO.taxableValue"></h4>
 														</div>
 													</div>
 												</div>
@@ -909,13 +847,12 @@
 														<input type="text" class="form-control" placeholder="Name of the Signatuaory">
 													</div>
 													<div class="form-group float-end mb-0">
-														<button class="btn btn-primary" onclick="saveInvoice();" type="submit">Save Invoice</button>
+														<button class="btn btn-primary" onclick="saveInvoice();"  type="submit">Save Invoice</button>
 													</div>
 												</div>
 											</div>
 										</div>
-									</form>
-
+										<!-- <form> -->
 								</div>
 							</div>
 						</div>
@@ -1411,6 +1348,187 @@
 
 		<!-- Custom JS -->
 		<script src="assets/js/app.js"></script>
-
+         <script >
+         
+        function custNameSelected (){
+        	 var custname = document.getElementById("custnameselected").value;
+        	 console.log("called custnameseleted : "+custname);
+        	 $("#custname").val(custname);
+        	 $.ajax({
+        		url : "getCustomerAddress.action",
+        		type : "POST",
+        		data : {custName : custname},
+        		success : function (data){
+        			console.log("address data : "+data);
+        			if(data != ""){
+        			document.getElementById('invoiceFrom').innerHTML = JSON.parse(data)["invoiceFrom"];
+        			document.getElementById('invoiceTo').innerHTML = JSON.parse(data)["invoiceTo"];
+        			console.log("successfully fetched address details of customer");
+        			}else {
+        				console.log("something is wrong address got null");
+        			}
+        		},
+        		error : function (){
+        			console.log("Exception occured while fetching customer address..");
+        		}
+        	 });
+         }
+         function selectedProduct (){
+        	 var prodname = document.getElementById("selectedproduct").value;
+        	 console.log("called selectedProduct : "+prodname);
+        	 $.ajax({
+        		url : "getProductDetails.action",
+        		type : "GET",
+        		data : {"prodName" : prodname},
+        		success : function (data){
+        			
+        			if(data != ""){
+        				
+            			$("#rate").val(JSON.parse(data)["productAmount"]);
+            			var quantity = parseFloat($("#quantity").val());
+            			var discount = parseFloat($("#discount").val());
+            			 if(JSON.parse(data)["productAmount"] != null && quantity != null && discount != null){
+            				var amount = quantity * parseFloat(JSON.parse(data)["productAmount"]);
+            				$("#amount").val((amount - ( amount * discount / 100 )).toFixed(2));
+            			    }else if(JSON.parse(data)["productAmount"] != null && quantity != null){
+            				   $("#amount").val((quantity * parseFloat(JSON.parse(data)["productAmount"])).toFixed(2));
+            			   }
+            			}else {
+            				console.log("something is wrong amount got null");
+            			}
+        		},
+        		error : function (){
+        			console.log("Exception occured while fetching product details..");
+        		}
+        	 });
+         }
+         
+         function saveInvoice(){
+        	 console.log("calling saveInvoice method..");
+        	 console.log("taxable value "+$("#taxableAmount").text().trim());
+        	 console.log("totalamount value "+$("#totalamount").val());
+        	 $.ajax({
+         		url : "saveInvoice.action",
+         		type : "POST",
+         		data : {"custnameselected" : $("#custname").val(),
+         			     "poNumber" : $("#poNumber").val(),
+         			     "invoiceNo" : $("#invoiceNo").text().trim(),
+         			     "invoiceDate" : $("#invoiceDate").val(),
+         			     "invoiceDueDtae" : $("#invoiceDueDtae").val(),
+         			     "invoiceFrom" : $("#invoiceFrom").text().trim(),
+         			     "invoiceTo" : $("#invoiceTo").text().trim(),
+        	             "selectedProduct" : document.getElementById("selectedproduct").value,
+        	             "prodDesc" : $("#prodDesc").val(),
+        	             "quantity" : $("#quantity").val(),
+        	             "rate"  : $("#rate").val(),
+        	             "amount" : $("#amount").val(),
+        	             "taxableAmount" : $("#taxableAmount").text().trim(),
+        	             "totalamount" : $("#totalamount").val()
+         			},
+         		success : function (data){
+             			console.log("successfully fetched product details ");	
+         		},
+         		error : function (){
+         			console.log("Exception occured while fetching product details..");
+         		}
+         	 });
+        	 /* var bForm = "addInvoice";
+        	 url = "./saveInvoice.action";
+        	 console.log("inside saveInvoice method.."+bForm +" and url :: "+url);
+        	 $('#'+bForm).attr("action",url);
+        	 $('#'+bForm).submit();  */
+        	 
+         }
+         
+         function addproduct(){
+        	 var prodtable = $("#prodTable");
+        	 var tlen = $("#prodTable tr").length-2;
+        	 
+        	console.log("tlen   ::"+tlen);
+        	 prodtable.append('<tr class="add-row">'+
+        	 '<td>'+document.getElementById("selectedproduct").value +'</td>'
+        	 +'<input type="hidden" id="productName'+tlen+'" name="invoiceDO.invoiceProductDO.productName['+tlen+']" value="'+document.getElementById("selectedproduct").value+'">'
+        	 +'<input type="hidden" id="invoiceProductId'+tlen+'" name="invoiceDO.invoiceProductDO.invoiceProductId['+tlen+']" value="'+2+'"></td>'
+        	 +'<td>'+$("#prodDesc").val()+'<input type="hidden" id="prodDesc'+tlen+'" name="invoiceDO.invoiceProductDO.productDescription['+tlen+']" value="'+$("#prodDesc").val()+'"></td>'
+        	 +'<td>'+$("#quantity").val() + '<input type="hidden" id="quantity'+tlen+'" name="invoiceDO.invoiceProductDO.quantity['+tlen+']" value="'+$("#quantity").val()+'"></td>'
+        	 +'<td>'+$("#rate").val() + '<input type="hidden" id="rate'+tlen+'" name="invoiceDO.invoiceProductDO.rate['+tlen+']" value="'+$("#rate").val()+'"></td>'
+        	 +'<td>'+$("#amount").val() +'<input type="hidden" id="amount'+tlen+'" name="invoiceDO.invoiceProductDO.amount['+tlen+']" value="'+$("#amount").val()+'"></td>'
+        	 +'<td>'+$("#discount").val()+'<input type="hidden" id="discount'+tlen+'" name="invoiceDO.invoiceProductDO.discount['+tlen+']" value="'+$("#discount").val()+'"></td>'
+        	 +'<td class="add-remove text-end"> <a onclick="javascript:removeProd(\''+$("#amount").val()+'\');" class="remove-btn"><i class="fa fa-trash-alt"></i></a></td>');
+        	 
+        	  var totaltaxablevalue = parseFloat($("#amount").val());
+        	 console.log("totaltaxable "+totaltaxablevalue);
+        	  for(var i = 0;i<tlen;i++){
+        		 console.log("inside for loop "+totaltaxablevalue);
+        		 totaltaxablevalue = totaltaxablevalue + parseFloat($("#amount"+i).val());
+        	 } 
+        	  totaltaxablevalue = (totaltaxablevalue + ( totaltaxablevalue * 18 / 100 )).toFixed(2);
+        	 document.getElementById('taxableAmount').innerHTML = totaltaxablevalue; 
+        	 $("#totalamount").val(totaltaxablevalue);
+         }
+         
+         function calculateAmtonQuantity(){
+        	 console.log("inside calculateAmtonQuantity function");
+        	 var quantity = parseInt($("#quantity").val());
+        	 var rate = parseInt($("#rate").val());
+        	 console.log("inside calculateAmtonQuantity values"+quantity +"rate"+rate);
+        	 if((quantity != null || quantity != undefined) && rate != null || rate != undefined){
+        	 var amount = quantity * rate.toFixed(2);
+        	 $("#amount").val(amount);
+        	 }
+        	 
+         }
+         function calAmountOnDiscount(){
+        	 console.log("inside calAmountOnDiscount function");
+        	 var quantity = parseInt($("#quantity").val());
+        	 var rate = parseInt($("#rate").val());
+        	 var amount = quantity * rate;
+        	 var discount = parseInt($("#discount").val());
+        	 console.log("inside calAmountOnDiscount values"+amount +"discount"+discount);
+        	 if((amount !=null && amount != undefined) && (discount != null || discount != undefined)){
+        		 $("#amount").val((amount - ( amount * discount / 100 )).toFixed(2));
+        	 }
+         }
+         
+         function removeProd(amount){
+        	 console.log("inside removeprod loop :"+amount);
+        	  var totaltaxableval = (parseFloat($("#taxableAmount").text().trim()) - parseFloat(amount) - ( amount * 18 / 100 )).toFixed(2);
+        	 document.getElementById('taxableAmount').innerHTML = totaltaxableval; 
+        	 $("#totalamount").val(totaltaxableval);
+         }
+         
+         function serviceOnTotal(serviceamountid){
+        	 console.log("service charge field id :"+serviceamountid);
+        	 var serviceamount = parseFloat($("#servicecharge"+serviceamountid).val());
+        	 var total = parseFloat($("#totalamount").val());
+        	 $("#totalamount").val(total + serviceamount);
+        	 
+         }
+         
+          function discountOnTotal(discountid){
+        	  console.log("Discount amount id :"+discountid);
+        	  var discount = parseFloat($("#discountOnTotal"+discountid).val());
+        	  var total = parseFloat($("#totalamount").val());
+        	  $("#totalamount").val((total - (total * discount / 100 )).toFixed(2));
+          }
+          
+          function rmvDisOnTot(){
+        	  console.log("rmvDisOnTot  amount id :");
+        	  var servicetotal = 0;
+        	  $(".links-info-one input").each(function (index){
+        		  console.log("inside rmvdiscountontaotal loop"+index);
+        		  servicetotal = servicetotal + parseFloat($("#servicecharge"+index).val());
+        	  });
+        	  
+        	  var total = parseFloat($("#totalamount").val());
+        	  $("#totalamount").val((total + (total * discount / 100 )).toFixed(2));
+          }
+          
+          function rmvServOnTot(){
+        	  var totaltaxableval = $("#taxableAmount").text().trim();
+        	  
+          }
+         
+       </script>
     </body>
 </html>

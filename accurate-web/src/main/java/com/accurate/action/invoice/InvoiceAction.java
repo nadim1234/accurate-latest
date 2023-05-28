@@ -1,9 +1,13 @@
 package com.accurate.action.invoice;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -110,6 +114,7 @@ public class InvoiceAction extends ActionSupport {
 			invoiceDO.setInvoiceDate(new Date(millis));
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::loadAddInvoice()==>"+e);
+			return INPUT;
 		}
 		logger.info("InvoiceAction :: loadAddInvoice :: end loadAddInvoice method");
 		return SUCCESS;
@@ -134,6 +139,7 @@ public class InvoiceAction extends ActionSupport {
 			response.getWriter().println(jsonobject);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::getCustomerAddress()==>"+e);
+			return INPUT;
 		}
 		logger.info("InvoiceAction :: getCustomerAddress :: end getCustomerAddress method");
 		return null;
@@ -154,6 +160,7 @@ public class InvoiceAction extends ActionSupport {
 			response.getWriter().println(jsonobject);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::getProductDetails()==>"+e);
+			return INPUT;
 		}
 		logger.info("InvoiceAction :: getProductDetails :: end getProductDetails method");
 		return null;
@@ -161,8 +168,50 @@ public class InvoiceAction extends ActionSupport {
 	
 	public String saveInvoice() {
 		logger.info("InvoiceAction :: saveInvoice :: start saveInvoice method");
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		String custnameselected = request.getParameter("custnameselected");
+		String poNumber = request.getParameter("poNumber");
+		String invoiceNo = request.getParameter("invoiceNo");
+		//String invoiceDate = request.getParameter("invoiceDate");
+		//String invoiceDueDtae = request.getParameter("invoiceDueDtae");
+		String invoiceFrom = request.getParameter("invoiceFrom");
+		String invoiceTo = request.getParameter("invoiceTo");
+		String selectedProduct = request.getParameter("selectedProduct");
+		String prodDesc = request.getParameter("prodDesc");
+		Integer quantity = Integer.parseInt(request.getParameter("quantity"));
+		Integer rate = Integer.parseInt(request.getParameter("rate"));
+		Integer amount = Integer.parseInt(request.getParameter("amount"));
+		Integer temptax = Integer.parseInt(request.getParameter("taxableAmount"));
+		Integer temptotal = Integer.parseInt(request.getParameter("totalamount"));
+		BigDecimal taxableAmount = new BigDecimal(temptax);
+		BigDecimal totalamount = new BigDecimal(temptotal);
 		try {
-			 
+			
+			
+			InvoiceProductDO invoiceProductdo = new InvoiceProductDO();
+			invoiceDO.setInvoiceNo(invoiceNo);
+			invoiceDO.setPoNo(poNumber);
+			invoiceDO.setBillingAddress(invoiceFrom);
+			invoiceDO.setShippingAddress(invoiceTo);
+			invoiceDO.setCustomerName(custnameselected);
+			invoiceDO.setCity("Pune");
+			invoiceDO.setState("Mharashtra");
+			invoiceDO.setGstNo("1234");
+			invoiceDO.setTaxableValue(taxableAmount);
+			invoiceDO.setInvoiceValue(totalamount);
+			invoiceProductdo.setProductName(selectedProduct);
+			invoiceProductdo.setProductDescription(prodDesc);
+			invoiceProductdo.setQuantity(quantity);
+			invoiceProductdo.setRate(rate);
+			invoiceProductdo.setDiscount(10);
+			invoiceProductdo.setAmount(amount);
+			invoiceProductdo.setTax(taxableAmount.intValue());
+			invoiceProductdo.setInvoice_No(123456);
+			invoiceProductdo.setInvoice_ID(7);
+			invoiceProductdo.setRegisterId(555555);
+			invoiceProductdo.setUserId(362648);
+			invoiceDO.setInvoiceProductDO(invoiceProductdo);
 			invoiceService.saveInvoice(invoiceDO);
 			System.out.println("invoicedo data :"+invoiceDO.getPoNo());
 			System.out.println("product rate "+invoiceDO.getInvoiceProductDO().getRate());
@@ -170,6 +219,7 @@ public class InvoiceAction extends ActionSupport {
 			
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::saveInvoice()==>"+e);
+			return INPUT;
 		}
 		logger.info("InvoiceAction :: saveInvoice :: end saveInvoice method");
 		return SUCCESS;

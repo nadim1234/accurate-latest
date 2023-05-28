@@ -18,6 +18,7 @@
         
          <action name="loadAddInvoice" class="invoiceAction" method="loadAddInvoice">
             <result name="success">/pages/add-Invoice.jsp</result>
+            <result name="input">/pages/add-Invoice.jsp</result>
         </action>
         
          <action name="getCustomerAddress" class="invoiceAction" method="getCustomerAddress">
@@ -30,6 +31,7 @@
         
         <action name="saveInvoice" class="invoiceAction" method="saveInvoice">
             <result name="success">/pages/add-Invoice.jsp</result>
+            <result name="input">/pages/add-Invoice.jsp</result>
         </action>
         
          
