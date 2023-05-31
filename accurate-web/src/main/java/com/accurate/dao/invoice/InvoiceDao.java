@@ -60,6 +60,10 @@ public class InvoiceDao {
 			System.out.println(session.isOpen());
 			invoiceList=query.list();
 			
+			Criteria criteria=session.createCriteria(InvoiceDO.class);
+			System.out.println(session.isOpen());
+			invoiceList=criteria.list();
+			
 			/*Object[] o=l.get(0);
 			System.out.println(o[0]);*/
 			
@@ -128,15 +132,15 @@ public class InvoiceDao {
 			
 			query.addScalar("customerId",StandardBasicTypes.INTEGER);
 			query.addScalar("customerName",StandardBasicTypes.STRING);
-			query.addScalar("gst_no",StandardBasicTypes.INTEGER);
+			query.addScalar("gstNo",StandardBasicTypes.STRING);
 			query.addScalar("address1",StandardBasicTypes.STRING);
 			query.addScalar("address2",StandardBasicTypes.STRING);
 			query.addScalar("city",StandardBasicTypes.STRING);
+			query.addScalar("pincode",StandardBasicTypes.INTEGER);
 			query.addScalar("state",StandardBasicTypes.STRING);
 			query.addScalar("country",StandardBasicTypes.STRING);
 			query.addScalar("email",StandardBasicTypes.STRING);
 			query.addScalar("contactNo",StandardBasicTypes.STRING);
-			query.addScalar("pinCode",StandardBasicTypes.INTEGER);
 			
 			query.setResultTransformer(Transformers.aliasToBean(CustomerDO.class));
 			

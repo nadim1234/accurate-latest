@@ -29,7 +29,7 @@ public class CustomerDO {
 	Integer pincode;
 
 	@Column(name="state")
-	Integer state;
+	String state;
 
 	@Column(name="country")
 	String country;
@@ -96,11 +96,13 @@ public class CustomerDO {
 		this.pincode = pincode;
 	}
 
-	public Integer getState() {
+	
+
+	public String getState() {
 		return state;
 	}
 
-	public void setState(Integer state) {
+	public void setState(String state) {
 		this.state = state;
 	}
 
