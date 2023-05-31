@@ -602,8 +602,9 @@
 														<div class="form-group">
 														     <input type="hidden" name="invoiceDO.customerName" id="custname"/>         
 															 <select id="custnameselected" onchange ="custNameSelected();" class="select ">
-																<s:iterator value="customerList">
-                                                                  <option> <s:property /> </option>
+																<s:iterator value="invoiceDO.customerList">
+                                                                  <option value="<s:property value="customerId"/>"> 
+                                                                   <s:property value="customerName"/> </option>
 															    </s:iterator>
 															 </select>
 														</div>
@@ -726,14 +727,15 @@
 																  <input type="hidden" id="productName" name="invoiceDO.invoiceProductDO.productName" />
 																		<select class="select" id="selectedproduct" onchange="selectedProduct();">
 																			
-																			<s:iterator value="prodList">
-                                                                            <option> <s:property /> </option>
+																			<s:iterator value="invoiceDO.productList">
+                                                                            <option value="<s:property value="productId" />"> 
+                                                                              <s:property value="productName" /> </option>
 																	         </s:iterator>
 																		</select>
 																	</div>
 															</td>
 															<td>
-																<input type="text" id="prodDesc" name="invoiceDO.invoiceProductDO.productDescription" class="form-control">
+																<input type="text" id="category" name="invoiceDO.invoiceProductDO.category" class="form-control">
 															</td>
 															<td>
 																<input type="text" id="quantity" name="invoiceDO.invoiceProductDO.quantity" onblur="javascript:calculateAmtonQuantity();" class="form-control">
@@ -1351,13 +1353,13 @@
          <script >
          
         function custNameSelected (){
-        	 var custname = document.getElementById("custnameselected").value;
-        	 console.log("called custnameseleted : "+custname);
+        	 var custId = document.getElementById("custnameselected").value;
+        	 console.log("called custnameseleted : "+custId);
         	 $("#custname").val(custname);
         	 $.ajax({
         		url : "getCustomerAddress.action",
         		type : "POST",
-        		data : {custName : custname},
+        		data : {custId : custId},
         		success : function (data){
         			console.log("address data : "+data);
         			if(data != ""){
@@ -1374,17 +1376,19 @@
         	 });
          }
          function selectedProduct (){
-        	 var prodname = document.getElementById("selectedproduct").value;
-        	 console.log("called selectedProduct : "+prodname);
+        	 var prodId = document.getElementById("selectedproduct").value;
+        	 console.log("called selectedProduct : "+prodId);
         	 $.ajax({
         		url : "getProductDetails.action",
         		type : "GET",
-        		data : {"prodName" : prodname},
+        		data : {"prodId" : prodId},
         		success : function (data){
         			
         			if(data != ""){
         				
             			$("#rate").val(JSON.parse(data)["productAmount"]);
+            			$("#category").val(JSON.parse(data)["Category"]);
+            			$("#quantity").val(JSON.parse(data)["Unit"]);
             			var quantity = parseFloat($("#quantity").val());
             			var discount = parseFloat($("#discount").val());
             			 if(JSON.parse(data)["productAmount"] != null && quantity != null && discount != null){
@@ -1418,7 +1422,7 @@
          			     "invoiceFrom" : $("#invoiceFrom").text().trim(),
          			     "invoiceTo" : $("#invoiceTo").text().trim(),
         	             "selectedProduct" : document.getElementById("selectedproduct").value,
-        	             "prodDesc" : $("#prodDesc").val(),
+        	             "prodDesc" : $("#category").val(),
         	             "quantity" : $("#quantity").val(),
         	             "rate"  : $("#rate").val(),
         	             "amount" : $("#amount").val(),
@@ -1449,7 +1453,7 @@
         	 '<td>'+document.getElementById("selectedproduct").value +'</td>'
         	 +'<input type="hidden" id="productName'+tlen+'" name="invoiceDO.invoiceProductDO.productName['+tlen+']" value="'+document.getElementById("selectedproduct").value+'">'
         	 +'<input type="hidden" id="invoiceProductId'+tlen+'" name="invoiceDO.invoiceProductDO.invoiceProductId['+tlen+']" value="'+2+'"></td>'
-        	 +'<td>'+$("#prodDesc").val()+'<input type="hidden" id="prodDesc'+tlen+'" name="invoiceDO.invoiceProductDO.productDescription['+tlen+']" value="'+$("#prodDesc").val()+'"></td>'
+        	 +'<td>'+$("#category").val()+'<input type="hidden" id="category'+tlen+'" name="invoiceDO.invoiceProductDO.category['+tlen+']" value="'+$("#category").val()+'"></td>'
         	 +'<td>'+$("#quantity").val() + '<input type="hidden" id="quantity'+tlen+'" name="invoiceDO.invoiceProductDO.quantity['+tlen+']" value="'+$("#quantity").val()+'"></td>'
         	 +'<td>'+$("#rate").val() + '<input type="hidden" id="rate'+tlen+'" name="invoiceDO.invoiceProductDO.rate['+tlen+']" value="'+$("#rate").val()+'"></td>'
         	 +'<td>'+$("#amount").val() +'<input type="hidden" id="amount'+tlen+'" name="invoiceDO.invoiceProductDO.amount['+tlen+']" value="'+$("#amount").val()+'"></td>'
@@ -1512,20 +1516,24 @@
         	  $("#totalamount").val((total - (total * discount / 100 )).toFixed(2));
           }
           
-          function rmvDisOnTot(){
-        	  console.log("rmvDisOnTot  amount id :");
-        	  var servicetotal = 0;
+                   
+          function rmvServOnTotandrmvDisOnTot(){
+        	  console.log("rmvservntot ");
+        	  var totalAmount = 0;
+        	  var taxableval = parseFloat($("#taxableAmount").text().trim());
+        	  var servicecharge = 0;
         	  $(".links-info-one input").each(function (index){
-        		  console.log("inside rmvdiscountontaotal loop"+index);
-        		  servicetotal = servicetotal + parseFloat($("#servicecharge"+index).val());
+        		  console.log("inside loop of rmvservtax :"+index +" values of service:"+$(this).val());
+        		  servicecharge = servicecharge + parseFloat($(this).val());
+        	  });
+        	  totalAmount = taxableval + servicecharge;
+        	  var totalDiscount = 0;
+        	  $(".links-info-discount input").each(function (index){
+        		  console.log("inside loop of rmvservtax :"+index +"value of discount :"+$(this).val());
+        		  totalAmount = (totalAmount - (totalAmount * parseFloat($(this).val()) / 100 )).toFixed(2);
         	  });
         	  
-        	  var total = parseFloat($("#totalamount").val());
-        	  $("#totalamount").val((total + (total * discount / 100 )).toFixed(2));
-          }
-          
-          function rmvServOnTot(){
-        	  var totaltaxableval = $("#taxableAmount").text().trim();
+        	  $("#totalamount").val(totalAmount);
         	  
           }
          

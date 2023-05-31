@@ -142,6 +142,8 @@ public class InvoiceDO {
 	BigDecimal totalCancelledInvoiceValue;
 	
 	List<InvoiceDO> pageResults=new ArrayList<InvoiceDO>();
+	List<CustomerDO> customerList = new ArrayList<CustomerDO>();
+	List<ProductDO> productList = new ArrayList<ProductDO>();
 	
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name="Invoice_Product_ID")
@@ -157,9 +159,27 @@ public class InvoiceDO {
 		this.invoiceProductDO.addAll(invoiceProductDO);
 		//this.invoiceProductDO = invoiceProductDO;
 	}*/
+	
+	
 
 	public InvoiceProductDO getInvoiceProductDO() {
 		return invoiceProductDO;
+	}
+
+	public List<CustomerDO> getCustomerList() {
+		return customerList;
+	}
+
+	public void setCustomerList(List<CustomerDO> customerList) {
+		this.customerList = customerList;
+	}
+
+	public List<ProductDO> getProductList() {
+		return productList;
+	}
+
+	public void setProductList(List<ProductDO> productList) {
+		this.productList = productList;
 	}
 
 	public void setInvoiceProductDO(InvoiceProductDO invoiceProductDO) {

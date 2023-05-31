@@ -2,31 +2,32 @@ package com.accurate.action.invoice;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.apache.struts2.RequestUtils;
+
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.StrutsStatics;
+
 import org.json.JSONObject;
 
 import com.accurate.service.invoice.InvoiceService;
+import com.invoice.CustomerDO;
 import com.invoice.InvoiceDO;
 import com.invoice.InvoiceProductDO;
-import com.opensymphony.xwork2.ActionContext;
+import com.invoice.ProductDO;
+
 import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.util.CreateIfNull;
+
 import com.opensymphony.xwork2.util.Element;
-import com.opensymphony.xwork2.util.Key;
-import com.opensymphony.xwork2.util.KeyProperty;
+
 
 public class InvoiceAction extends ActionSupport {
 	
@@ -40,8 +41,25 @@ public class InvoiceAction extends ActionSupport {
 	private List<InvoiceDO> invoiceList=new ArrayList<InvoiceDO>();
 	
 	private InvoiceDO invoiceDO=new InvoiceDO();
-	
-	
+	private List<CustomerDO> customerdo = new ArrayList<CustomerDO>();
+	private List<ProductDO> productdo = new ArrayList<ProductDO>();
+		
+
+	public List<CustomerDO> getCustomerdo() {
+		return customerdo;
+	}
+
+	public void setCustomerdo(List<CustomerDO> customerdo) {
+		this.customerdo = customerdo;
+	}
+
+	public List<ProductDO> getProductdo() {
+		return productdo;
+	}
+
+	public void setProductdo(List<ProductDO> productdo) {
+		this.productdo = productdo;
+	}
 
 	public InvoiceDO getInvoiceDO() {
 		return invoiceDO;
@@ -72,24 +90,7 @@ public class InvoiceAction extends ActionSupport {
 		this.invoiceService = invoiceService;
 	}
 	
-	List <String> customerList = new ArrayList<String>();
-
-	public List<String> getCustomerList() {
-		return customerList;
-	}
-
-	public void setCustomerList(List<String> customerList) {
-		this.customerList = customerList;
-	}
-	List<String> prodList = new ArrayList<String>();
-
-	public List<String> getProdList() {
-		return prodList;
-	}
-
-	public void setProdList(List<String> prodList) {
-		this.prodList = prodList;
-	}
+	
 
 	public String getAllInvoice() {
 		logger.info("InvoiceAction::getAllInvoice() start");
@@ -107,11 +108,8 @@ public class InvoiceAction extends ActionSupport {
 		logger.info("InvoiceAction :: loadAddInvoice :: start loadAddInvoice method");
 		try {
 			
-			customerList=invoiceService.getCustometList();
-			prodList = invoiceService.getProductList();
-			invoiceDO.setInvoiceNo("IN098765423");
-			long millis=System.currentTimeMillis(); 
-			invoiceDO.setInvoiceDate(new Date(millis));
+			invoiceDO=invoiceService.getCustometListAndProductList();
+					
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::loadAddInvoice()==>"+e);
 			return INPUT;
@@ -125,12 +123,12 @@ public class InvoiceAction extends ActionSupport {
 		logger.info("InvoiceAction :: getCustomerAddress :: start getCustomerAddress method");
 		HttpServletRequest request = ServletActionContext.getRequest();
 		HttpServletResponse response = ServletActionContext.getResponse();
-		String custname = request.getParameter("custName");
+		String custId = request.getParameter("custId");
 		JSONObject jsonobject = new JSONObject();
 		try {
 			
-			System.out.println("Successfuly called getCustomerAddress :: "+custname);
-			String address = invoiceService.getCustomerAddress(custname);
+			System.out.println("Successfuly called getCustomerAddress :: "+custId);
+			String address = invoiceService.getCustomerAddress(custId);
 			String [] addresstemp = address.split("~");
 			System.out.println("Successfuly got address :: "+addresstemp[0]);
 			System.out.println("Successfuly got shipping address :: "+addresstemp[1]);
@@ -149,14 +147,25 @@ public class InvoiceAction extends ActionSupport {
 		logger.info("InvoiceAction :: getProductDetails :: start getProductDetails method");
 		HttpServletRequest request = ServletActionContext.getRequest();
 		HttpServletResponse response = ServletActionContext.getResponse();
-		String prodName = request.getParameter("prodName");
+		String prodId = request.getParameter("prodId");
+		ProductDO productdetails = new ProductDO();
 		JSONObject jsonobject = new JSONObject();
 		try {
 			
-			System.out.println("Successfuly called getProductDetails :: "+prodName);
-			int amount = invoiceService.getProductDetails(prodName);
-			System.out.println("Successfuly got product amount :: "+amount);
-			jsonobject.put("productAmount", amount);
+			System.out.println("getproductDetails sucessfully called ");
+			productdetails = invoiceService.getProductDetails(prodId);
+			System.out.println("Successfuly got product amount :: "+productdetails);
+			   if(productdetails.getRate() != null) {
+				jsonobject.put("productAmount", productdetails.getRate());
+			   }
+			   if(productdetails.getCategory() != null) {
+				jsonobject.put("Category", productdetails.getCategory());
+			   }
+			   if(productdetails.getUnit() != null) {
+				jsonobject.put("Unit", productdetails.getUnit());
+			   }
+			
+			
 			response.getWriter().println(jsonobject);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::getProductDetails()==>"+e);

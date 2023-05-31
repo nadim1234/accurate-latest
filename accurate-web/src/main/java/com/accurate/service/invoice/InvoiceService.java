@@ -1,15 +1,20 @@
 package com.accurate.service.invoice;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 import com.accurate.action.invoice.InvoiceAction;
 import com.accurate.dao.invoice.InvoiceDao;
+import com.invoice.CustomerDO;
 import com.invoice.InvoiceDO;
 import com.invoice.InvoiceProductDO;
+import com.invoice.ProductDO;
 
 public class InvoiceService {
 
@@ -81,21 +86,33 @@ public class InvoiceService {
 		return invoiceDO;
 	}
 	
-	public List<String> getCustometList(){
-		logger.info("InvoiceService :: getCustomerList :: start method ");
-		List<String> custList = new ArrayList<String>();
+	public InvoiceDO getCustometListAndProductList(){
+		logger.info("InvoiceService :: getCustometListAndProductList :: start method ");
+		List<CustomerDO> custList = new ArrayList<CustomerDO>();
+		List<ProductDO> prodList = new ArrayList<ProductDO>();
+		String invoiceNo = "";
+		InvoiceDO invoiceDO=new InvoiceDO();
 		try {
 			custList = invoiceDao.getCustometList();
+			prodList = invoiceDao.getProductList();
+			invoiceDO.setCustomerList(custList);
+			invoiceDO.setProductList(prodList);
+			invoiceNo = invoiceDao.getMaxInviceNo();
+			invoiceDO.setInvoiceNo(invoiceNo);
+			long millis=System.currentTimeMillis(); 
+			invoiceDO.setInvoiceDate(new Date(millis));
+			System.out.println("customer List :"+custList.get(0).getCustomerName());
+			System.out.println("product List :"+prodList.get(0).getProductName());
 		}catch(Exception e) {
-			logger.error("Exception in InvoiceAction::getCustomerList()==>"+e);
+			logger.error("Exception in InvoiceService::getCustometListAndProductList()==>"+e);
 		}
-		logger.info("InvoiceService :: getCustomerList :: end method ");
-		return custList;
+		logger.info("InvoiceService :: getCustometListAndProductList :: end method ");
+		return invoiceDO;
 	}
 	
-	public List<String> getProductList(){
+	/*public List<ProductDO> getProductList(){
 		logger.info("InvoiceService :: getProductList :: start method ");
-		List<String> prodList = new ArrayList<String>();
+		List<ProductDO> prodList = new ArrayList<ProductDO>();
 		try {
 			prodList = invoiceDao.getProductList();
 		}catch(Exception e) {
@@ -104,12 +121,12 @@ public class InvoiceService {
 		logger.info("InvoiceService :: getProductList :: end method ");
 		return prodList;
 	}
-	
-	public String getCustomerAddress(String custname){
+	*/
+	public String getCustomerAddress(String custId){
 		logger.info("InvoiceService :: getCustomerAddress :: start method ");
 		String address = "";
 		try {
-			address = invoiceDao.getCustomerAddress(custname);
+			address = invoiceDao.getCustomerAddress(custId);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::getCustomerAddress()==>"+e);
 		}
@@ -118,16 +135,16 @@ public class InvoiceService {
 	}
 	
 	
-	public int getProductDetails(String prodname){
+	public ProductDO getProductDetails(String prodId){
 		logger.info("InvoiceService :: getProductDetails :: start method ");
-		int Amount =0;
+		ProductDO prodDetails = new ProductDO();
 		try {
-			Amount = invoiceDao.getProductDetails(prodname);
+			prodDetails = invoiceDao.getProductDetails(prodId);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::getProductDetails()==>"+e);
 		}
 		logger.info("InvoiceService :: getProductDetails :: end method ");
-		return Amount;
+		return prodDetails;
 	}
 	
 	public void saveInvoice(InvoiceDO invoiceDO){

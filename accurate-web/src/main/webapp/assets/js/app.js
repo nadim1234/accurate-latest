@@ -350,11 +350,12 @@ $(document).ready(function() {
 		$(this).closest('.links-cont-discount').remove();
 		return false;
     });
+    /*onclick="javascript:rmvDisOnTot()"*/
     $(document).on("click",".add-links-one",function () {
     	var discountontotal = $(".links-info-discount input").length;
 		var experiencecontent = '<div class="links-cont-discount">' +
 			'<div class="service-amount">' +
-				'<a onclick="javascript:rmvDisOnTot()" class="service-trash-one"><i class="fa fa-minus-circle me-1"></i>Discount</a> ' +
+				'<a  class="service-trash-one"><i class="fa fa-minus-circle me-1"></i>Discount</a> ' +
 			'<input style="width:20vh;" onblur="javascript:discountOnTotal(\''+discountontotal+'\')" id="discountOnTotal'+discountontotal+'"'+
 			'value="" type="text" class="form-control"> </div>' +
 		'</div>';
@@ -594,7 +595,7 @@ $(document).on("click",".add-links1",function () {
 	var servicelen = $(".links-info-one input").length;
     var experiencecontent = '<div class="links-cont">' +
         '<div class="service-amount">' +
-            '<a onclick="javascript:rmvServOnTot()" class="service-trash1"><i class="fa fa-minus-circle me-1"></i>Service Charge</a> ' +
+            '<a  class="service-trash1"><i class="fa fa-minus-circle me-1"></i>Service Charge</a> ' +
         '<input style="width:20vh;" onblur="javascript:serviceOnTotal(\''+servicelen+'\')" '+
         'type="text" id="servicecharge'+servicelen+'" value="" class="form-control"> </div>' +
     '</div>';
@@ -604,12 +605,14 @@ $(document).on("click",".add-links1",function () {
 });
 $(".links-info-one").on('click','.service-trash1', function () {
     $(this).closest('.links-cont').remove();
+    rmvServOnTotandrmvDisOnTot();
     return false;
 });
 
 
  $(".links-info-discount").on('click','.service-trash-one', function () {
     $(this).closest('.links-cont-discount').remove();
+    rmvServOnTotandrmvDisOnTot();
     return false;
 });
 

@@ -2,7 +2,9 @@ package com.accurate.dao.invoice;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,7 +21,9 @@ import org.hibernate.Session;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.accurate.user.dao.hibernateUtil;
+import com.invoice.CustomerDO;
 import com.invoice.InvoiceDO;
+import com.invoice.ProductDO;
 
 public class InvoiceDao {
 	private Logger logger=Logger.getLogger(InvoiceDao.class);
@@ -70,13 +74,37 @@ public class InvoiceDao {
 	
 	@SuppressWarnings("deprecation")
 	@Transactional
-	public List<String> getCustometList(){
-		logger.info("InvoiceDao :: getCustomerList :: Start ");
-		List<String> custList = new ArrayList<String>();
+	public String  getMaxInviceNo(){
+		logger.info("InvoiceDao :: getMaxInviceNo :: Start ");
+		String invoiceNo="";
 		try {
 			Session session = hibernateUtl.createSession();
-			SQLQuery query = session.createSQLQuery("select Customer_Name from customer");
-			custList = query.list();
+			SQLQuery query = session.createSQLQuery("select max(Invoice_No) from invoice");
+			
+			invoiceNo=(String) query.uniqueResult();
+			
+			
+		}catch(Exception e) {
+			logger.error("Exception occured in InvoiceDao :: getMaxInviceNo ");
+		}
+		logger.info("InvoiceDao :: getMaxInviceNo method end");
+		return invoiceNo;
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Transactional
+	public List<CustomerDO> getCustometList(){
+		logger.info("InvoiceDao :: getCustomerList :: Start ");
+		List<CustomerDO> custList = new ArrayList<CustomerDO>();
+		try {
+			Session session = hibernateUtl.createSession();
+			SQLQuery query = session.createSQLQuery("select Customer_Id as customerId , Customer_Name as customerName from customer");
+			query.addScalar("customerId",StandardBasicTypes.INTEGER);
+			query.addScalar("customerName",StandardBasicTypes.STRING);
+			
+			query.setResultTransformer(Transformers.aliasToBean(CustomerDO.class));
+			custList=query.list();
+			
 			
 		}catch(Exception e) {
 			logger.error("Exception occured in InvoiceDao :: GetCustomerList ");
@@ -87,13 +115,17 @@ public class InvoiceDao {
 	
 	@SuppressWarnings("deprecation")
 	@Transactional
-	public List<String> getProductList(){
+	public List<ProductDO> getProductList(){
 		logger.info("InvoiceDao :: getProductList :: Start ");
-		List<String> prodList = new ArrayList<String>();
+		List<ProductDO> prodList = new ArrayList<ProductDO>();
 		try {
 			Session session = hibernateUtl.createSession();
-			SQLQuery query = session.createSQLQuery("select ProductName from product");
-			prodList = query.list();
+			SQLQuery query = session.createSQLQuery("select Product_Id as productId, ProductName as productName from product");
+			query.addScalar("productId",StandardBasicTypes.INTEGER);
+			query.addScalar("productName",StandardBasicTypes.STRING);
+			
+			query.setResultTransformer(Transformers.aliasToBean(ProductDO.class));
+			prodList=query.list();
 			
 		}catch(Exception e) {
 			logger.error("Exception occured in InvoiceDao :: getProductList ");
@@ -105,12 +137,12 @@ public class InvoiceDao {
 	
 	@SuppressWarnings("deprecation")
 	@Transactional
-	public String getCustomerAddress(String custname){
+	public String getCustomerAddress(String custId){
 		logger.info("InvoiceDao :: getCustomerAddress :: Start ");
 		String address = "";
 		try {
 			Session session = hibernateUtl.createSession();
-			SQLQuery query = session.createSQLQuery("select concat(Address1,'~',ShippingAddress1) from customer where Customer_Name ="+'"'+custname+'"');
+			SQLQuery query = session.createSQLQuery("select concat(Address1,'~',ShippingAddress1) from customer where Customer_Id ="+Integer.parseInt(custId));
 			List l =  query.list();
 			address = (String) l.get(0);
 			
@@ -124,20 +156,34 @@ public class InvoiceDao {
 	
 	@SuppressWarnings("deprecation")
 	@Transactional
-	public int getProductDetails(String prodname){
+	public ProductDO getProductDetails(String prodId){
 		logger.info("InvoiceDao :: getProductDetails :: Start ");
-		int Amount=0;
+		ProductDO proddtl = new ProductDO();
+		List<ProductDO> prodList = new ArrayList<ProductDO>();
 		try {
 			Session session = hibernateUtl.createSession();
-			SQLQuery query = session.createSQLQuery("select Rate from product where ProductName="+'"'+prodname+'"');
-			List l =  query.list();
-			Amount = (Integer) l.get(0);
+			SQLQuery query = session.createSQLQuery("select Unit as unit Rate as rate,Category as category from product where Product_Id="+Integer.parseInt(prodId));
+			
+			query.addScalar("unit",StandardBasicTypes.INTEGER);
+			query.addScalar("Rate",StandardBasicTypes.INTEGER);
+			query.addScalar("Category",StandardBasicTypes.STRING);
+			
+			query.setResultTransformer(Transformers.aliasToBean(ProductDO.class));
+			prodList= query.list();
+			for(ProductDO pr : prodList) {
+				if(pr.getCategory() != null)
+					proddtl.setCategory(pr.getCategory());
+				if(pr.getRate() != null)
+					proddtl.setRate(pr.getRate());
+				if(pr.getUnit() != null)
+					proddtl.setUnit(pr.getUnit());
+			}
 			
 		}catch(Exception e) {
 			logger.error("Exception occured in InvoiceDao :: getProductDetails ");
 		}
 		logger.info("InvoiceDao :: getProductDetails method end");
-		return Amount;
+		return proddtl;
 	}
 	
 	
