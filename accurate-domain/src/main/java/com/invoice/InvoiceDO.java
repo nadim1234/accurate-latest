@@ -3,14 +3,25 @@ package com.invoice;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "invoice")
@@ -101,6 +112,17 @@ public class InvoiceDO {
 
 	@Column(name = "Invoice_Value")
 	BigDecimal invoiceValue;
+	
+	@Column(name = "Taxable_Value")
+	BigDecimal taxableValue;
+
+	public BigDecimal getTaxableValue() {
+		return taxableValue;
+	}
+
+	public void setTaxableValue(BigDecimal taxableValue) {
+		this.taxableValue = taxableValue;
+	}
 
 	// Transfer values start
 	Integer totalInvoiceCount;
@@ -120,11 +142,13 @@ public class InvoiceDO {
 	BigDecimal totalCancelledInvoiceValue;
 	
 	List<InvoiceDO> pageResults=new ArrayList<InvoiceDO>();
-	
+	List<CustomerDO> customerList = new ArrayList<CustomerDO>();
+	List<ProductDO> productList = new ArrayList<ProductDO>();
+
 	List<InvoiceProductDO> invoiceProductDOs=new ArrayList<InvoiceProductDO>();
+
 	
 	CustomerDO customerDO;
-	
 	
 	
 	public CustomerDO getCustomerDO() {
@@ -141,6 +165,23 @@ public class InvoiceDO {
 
 	public void setInvoiceProductDOs(List<InvoiceProductDO> invoiceProductDOs) {
 		this.invoiceProductDOs = invoiceProductDOs;
+	}
+	
+
+	public List<CustomerDO> getCustomerList() {
+		return customerList;
+	}
+
+	public void setCustomerList(List<CustomerDO> customerList) {
+		this.customerList = customerList;
+	}
+
+	public List<ProductDO> getProductList() {
+		return productList;
+	}
+
+	public void setProductList(List<ProductDO> productList) {
+		this.productList = productList;
 	}
 
 	public List<InvoiceDO> getPageResults() {

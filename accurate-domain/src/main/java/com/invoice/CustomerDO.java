@@ -2,17 +2,14 @@ package com.invoice;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "customer")
 public class CustomerDO {
-	@Column(name="Customer_Id")
-	Integer customerId;
-
-	@Column(name="Customer_Name")
-	String customerName;
-
 	@Column(name="Gst_No")
 	String gstNo;
 
@@ -39,6 +36,16 @@ public class CustomerDO {
 
 	@Column(name="contact_no")
 	String contactNo;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "Customer_Id")
+	Integer customerId;
+
+	@Column(name = "Customer_Name")
+	String customerName;
+	
+	
 
 	public Integer getCustomerId() {
 		return customerId;
@@ -129,7 +136,5 @@ public class CustomerDO {
 	public void setContactNo(String contactNo) {
 		this.contactNo = contactNo;
 	}
-	
-	
 
 }

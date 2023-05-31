@@ -4,7 +4,9 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
  
 <struts>
-    <package name="Struts2SpringDemo" namespace="/" extends="struts-default">
+    <package name="Struts2SpringDemo" namespace="/" extends="struts-default,json-default">
+         
+         
          
         <action name="login" class="userAction">
             <result name="success">/index.jsp</result>
@@ -16,6 +18,23 @@
         
         <action name="viewInvoice" class="invoiceAction" method="viewInvoice">
             <result name="success">/pages/view-invoice.jsp</result>
+            </action>
+         <action name="loadAddInvoice" class="invoiceAction" method="loadAddInvoice">
+            <result name="success">/pages/add-Invoice.jsp</result>
+            <result name="input">/pages/add-Invoice.jsp</result>
+        </action>
+        
+         <action name="getCustomerAddress" class="invoiceAction" method="getCustomerAddress">
+            <result type="json">/pages/add-Invoice.jsp</result>
+        </action>
+        
+        <action name="getProductDetails" class="invoiceAction" method="getProductDetails">
+            <result type="json">/pages/add-Invoice.jsp</result>
+        </action>
+        
+        <action name="saveInvoice" class="invoiceAction" method="saveInvoice">
+            <result name="success">/pages/add-Invoice.jsp</result>
+            <result name="input">/pages/add-Invoice.jsp</result>
         </action>
         
          
