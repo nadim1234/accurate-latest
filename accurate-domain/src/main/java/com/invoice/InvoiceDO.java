@@ -147,7 +147,6 @@ public class InvoiceDO {
 
 	List<InvoiceProductDO> invoiceProductDOs=new ArrayList<InvoiceProductDO>();
 
-	
 	CustomerDO customerDO;
 	
 	

@@ -64,9 +64,9 @@ public class InvoiceDao {
 			System.out.println(session.isOpen());
 			invoiceList=query.list();
 			
-			Criteria criteria=session.createCriteria(InvoiceDO.class);
+		/*	Criteria criteria=session.createCriteria(InvoiceDO.class);
 			System.out.println(session.isOpen());
-			invoiceList=criteria.list();
+			invoiceList=criteria.list();*/
 			
 			/*Object[] o=l.get(0);
 			System.out.println(o[0]);*/
