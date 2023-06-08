@@ -1,5 +1,6 @@
 package com.accurate.dao.invoice;
 
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.accurate.user.dao.hibernateUtil;
@@ -165,11 +167,18 @@ public class InvoiceDao {
 	public String  getMaxInviceNo(){
 		logger.info("InvoiceDao :: getMaxInviceNo :: Start ");
 		String invoiceNo="";
+		String [] arr ;
+		Integer temp;
 		try {
 			Session session = hibernateUtl.createSession();
 			SQLQuery query = session.createSQLQuery("select max(Invoice_No) from invoice");
 			
 			invoiceNo=(String) query.uniqueResult();
+			
+			arr = invoiceNo.split("/");
+			temp = Integer.parseInt(arr[2]);
+			temp = temp+1;
+			invoiceNo = arr[0]+arr[1]+temp;
 			
 			
 		}catch(Exception e) {
@@ -230,7 +239,7 @@ public class InvoiceDao {
 		String address = "";
 		try {
 			Session session = hibernateUtl.createSession();
-			SQLQuery query = session.createSQLQuery("select concat(Address1,'~',ShippingAddress1) from customer where Customer_Id ="+Integer.parseInt(custId));
+			SQLQuery query = session.createSQLQuery("select concat(Address1,'~',ShippingAddress1,'~',state) from customer where Customer_Id ="+Integer.parseInt(custId));
 			List l =  query.list();
 			address = (String) l.get(0);
 			
@@ -250,11 +259,12 @@ public class InvoiceDao {
 		List<ProductDO> prodList = new ArrayList<ProductDO>();
 		try {
 			Session session = hibernateUtl.createSession();
-			SQLQuery query = session.createSQLQuery("select Unit as unit Rate as rate,Category as category from product where Product_Id="+Integer.parseInt(prodId));
+			SQLQuery query = session.createSQLQuery("select Unit as unit , Rate as rate,Category as category,applicable_tax as applicableTax from product where Product_Id="+Integer.parseInt(prodId));
 			
 			query.addScalar("unit",StandardBasicTypes.INTEGER);
 			query.addScalar("Rate",StandardBasicTypes.INTEGER);
 			query.addScalar("Category",StandardBasicTypes.STRING);
+			query.addScalar("applicableTax",StandardBasicTypes.STRING);
 			
 			query.setResultTransformer(Transformers.aliasToBean(ProductDO.class));
 			prodList= query.list();
@@ -265,6 +275,9 @@ public class InvoiceDao {
 					proddtl.setRate(pr.getRate());
 				if(pr.getUnit() != null)
 					proddtl.setUnit(pr.getUnit());
+				if(pr.getApplicableTax()!=null) {
+					proddtl.setApplicableTax(pr.getApplicableTax());
+				}
 			}
 			
 		}catch(Exception e) {
@@ -279,43 +292,93 @@ public class InvoiceDao {
 	@Transactional
 	public void saveInvoice(InvoiceDO invoiceDO){
 		logger.info("InvoiceDao :: getProductDetails :: Start ");
-		
+		 
 		try {
+			
+			int invoiceId ;
 			Session session = hibernateUtl.createSession();
-			session = session.getSessionFactory().openSession();
-			session.getTransaction().begin();
-			Query query = session.createNativeQuery("Insert into invoice (Invoice_No,Invoice_Date,Customer_Name,Billing_Address"
-					+ ",City,ShippingCustomer_Name,PO_No,CGST_Value,SGST_Value,IGST_Value,Taxable_Value,Invoice_Value,Invoice_Product_ID"
-					+ ",Register_Id,User_Id,Month,Invoice_Id) values(:ivno,:invdate,:custname,:billingadd,:city,:shippingadd,:pono,:cgstno,:sgstno,:igst,:taxablevalue,"
-					+ ":invoiceval,:prodid,:regid,:userid,:month,:invoiceid)");
+			SQLQuery query1 = session.createSQLQuery("select max(Invoice_Id) from invoice");
+			
+			invoiceId=  (Integer) query1.uniqueResult();
+			invoiceId = invoiceId + 1;
+			
+			//Session session = hibernateUtl.createSession();
+			Transaction transaction= session.getTransaction();
+			transaction.begin();
+			SQLQuery query = session.createSQLQuery("Insert into invoice (Invoice_No,Invoice_Date,Customer_Name,Billing_Address"
+					+ ",City,Shipping_Address,PO_No,CGST_Value,SGST_Value,IGST_Value,Taxable_Value,Invoice_Value,Invoice_Product_ID"
+					+ ",Month,Invoice_Id) values(:ivno,:invdate,:custname,:billingadd,:city,:shippingadd,:pono,:cgstno,:sgstno,:igst,:taxablevalue,"
+					+ ":invoiceval,:prodid,:month,:invoiceid)");
 					
 			query.setParameter("ivno", invoiceDO.getInvoiceNo());
-			query.setParameter("invdate", new Date(100));
+			query.setParameter("invdate", invoiceDO.getInvoiceDate());
 			query.setParameter("custname", invoiceDO.getCustomerName());
 			query.setParameter("billingadd", invoiceDO.getBillingAddress());
-			query.setParameter("city", invoiceDO.getCity());
-			query.setParameter("shippingadd", "abcdefg");
+			query.setParameter("city", "Mum");
+			query.setParameter("shippingadd", invoiceDO.getShippingAddress());
 			query.setParameter("pono", invoiceDO.getPoNo());
 			query.setParameter("cgstno", 9);
 			query.setParameter("sgstno",9);
 			query.setParameter("igst", 18);
-			query.setParameter("taxablevalue", invoiceDO.getTaxableValue());
-			query.setParameter("invoiceval", invoiceDO.getInvoiceValue());
-			query.setParameter("prodid", 50);
+			query.setParameter("taxablevalue", invoiceDO.getTaxableValue().setScale(0, RoundingMode.HALF_UP));
+			query.setParameter("invoiceval", invoiceDO.getInvoiceValue().setScale(0, RoundingMode.HALF_UP));
+			query.setParameter("prodid", 1);
 		//	query.setParameter("regid", invoiceDO.getInvoiceProductDO().getRegisterId());
 			//query.setParameter("userid", invoiceDO.getInvoiceProductDO().getUserId());
-			query.setParameter("month", 25);
-			query.setParameter("invoiceid", 11);
+			query.setParameter("month", "dec");
+			query.setParameter("invoiceid", invoiceId );
+					
+			System.out.println(invoiceDO.getInvoiceNo()+"-"+invoiceDO.getInvoiceDate()+"-"+invoiceDO.getCustomerName()+"-"+invoiceDO.getBillingAddress()+"-"+invoiceDO.getPoNo()+"-"+invoiceDO.getInvoiceValue());
 			
-					
-					/*+'"'+invoiceDO.getInvoiceNo()+'"'+','+new Date(100)+','+'"'+invoiceDO.getCustomerName()+'"'+','+'"'+invoiceDO.getBillingAddress()+'"'+','+'"'+invoiceDO.getCity()+'"'+
-					+','+'"'+invoiceDO.getShippingAddress()+'"'+','+'"'+invoiceDO.getPoNo()+'"'+','+10+','+4+','+6+','+invoiceDO.getTaxableValue()+','+invoiceDO.getInvoiceValue()
-					+','+10+','+invoiceDO.getInvoiceProductDO().getRegisterId()+','+invoiceDO.getInvoiceProductDO().getUserId()+")");
-					
-		*/			
-					
 			query.executeUpdate();
-			session.getTransaction().commit();
+			transaction.commit();
+			if(session.isOpen()) {
+				session.close();
+			}
+			
+			for(InvoiceProductDO invoiceprodDo : invoiceDO.getInvoiceProductDOs()) {
+				
+				int prodId ;
+				Session session1 = hibernateUtl.createSession();
+				SQLQuery query3 = session1.createSQLQuery("select max(Invoice_Product_Id) from invoice_products");
+				Object o =  query3.uniqueResult();
+				if(o == null) {
+					prodId = 1;
+				}else {
+					int a = (Integer) o;
+					prodId = a + 1;
+				}
+				
+						
+				Transaction transaction1= session1.getTransaction();
+				transaction1.begin();
+				SQLQuery query2 = session1.createSQLQuery("Insert into invoice_products (Invoice_Product_Id,Product_Name,Product_Description"
+						+ ",Quantity,Unit,Rate,Discount,Amount,Tax,Invoice_No,Invoice_ID,Register_Id,User_Id) values(:prodid,:proddname,:proddesc"
+						+ ",:quantity,:unit,:rate,:discount,:amt,:tax,:invNo,:invId,:regId,:userId)");
+						
+				query2.setParameter("prodid", prodId);
+				query2.setParameter("proddname", invoiceprodDo.getProductName());
+				query2.setParameter("proddesc", invoiceprodDo.getCategory());
+				query2.setParameter("quantity", invoiceprodDo.getQuantity());
+				query2.setParameter("unit", invoiceprodDo.getQuantity());
+				query2.setParameter("rate", invoiceprodDo.getRate().setScale(0, RoundingMode.HALF_UP));
+				query2.setParameter("discount", invoiceprodDo.getDiscount());
+				query2.setParameter("amt", invoiceprodDo.getAmount().setScale(0, RoundingMode.HALF_UP));
+				query2.setParameter("tax", 18);
+				query2.setParameter("invNo", 12345);
+				query2.setParameter("invId", invoiceId);
+				query2.setParameter("regId", 54321);
+				query2.setParameter("userId", 12345);
+				
+				query2.executeUpdate();
+				transaction1.commit();
+				
+				if(session1.isOpen()) {
+					session1.close();
+				}
+				
+			}
+					
 			
 			
 		}catch(Exception e) {

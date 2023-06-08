@@ -164,12 +164,12 @@ public class InvoiceService {
 		logger.info("InvoiceService :: saveInvoice :: start method ");
 		
 		try {
-			if(invoiceDO.getTaxableValue() == null) {
+			/*if(invoiceDO.getTaxableValue() == null) {
 				invoiceDO.setTaxableValue(new BigDecimal(50));
 			}
 			if(invoiceDO.getTotalInvoiceValue() == null) {
 				invoiceDO.setInvoiceValue(new BigDecimal(1000));
-			}
+			}*/
 			invoiceDao.saveInvoice(invoiceDO);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceService::saveInvoice()==>"+e);

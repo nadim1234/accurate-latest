@@ -46,16 +46,19 @@ public class InvoiceProductDO {
 	@Column(name = "Tax")
 	Double tax;
 
-	@Column(name = "Invoice_No")
-	Integer invoiceNo;
-
-	@Column(name = "Invoice_Date")
-	Date invoiceDate;
-
-	@Column(name = "Invoice_Id")
-	Integer invoiceId;
+	
+	String category;
 	
 	
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
 	@Column(name = "HSN_SAC")
 	String HSNSAC;
 		
@@ -158,30 +161,6 @@ public class InvoiceProductDO {
 
 	public void setTax(Double tax) {
 		this.tax = tax;
-	}
-
-	public Integer getInvoiceNo() {
-		return invoiceNo;
-	}
-
-	public void setInvoiceNo(Integer invoiceNo) {
-		this.invoiceNo = invoiceNo;
-	}
-
-	public Date getInvoiceDate() {
-		return invoiceDate;
-	}
-
-	public void setInvoiceDate(Date invoiceDate) {
-		this.invoiceDate = invoiceDate;
-	}
-
-	public Integer getInvoiceId() {
-		return invoiceId;
-	}
-
-	public void setInvoiceId(Integer invoiceId) {
-		this.invoiceId = invoiceId;
 	}
 
 	public String getHSNSAC() {

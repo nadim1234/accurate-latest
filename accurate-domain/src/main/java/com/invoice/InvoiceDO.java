@@ -115,6 +115,40 @@ public class InvoiceDO {
 	
 	@Column(name = "Taxable_Value")
 	BigDecimal taxableValue;
+	
+	@Column(name = "CGST_Value")
+	Integer CGSTValue;
+	
+	@Column(name = "SGST_Value")
+	Integer SGSTValue;
+	
+	@Column(name = "IGST_Value")
+	Integer IGSTValue;
+	
+
+	public Integer getCGSTValue() {
+		return CGSTValue;
+	}
+
+	public void setCGSTValue(Integer cGSTValue) {
+		CGSTValue = cGSTValue;
+	}
+
+	public Integer getSGSTValue() {
+		return SGSTValue;
+	}
+
+	public void setSGSTValue(Integer sGSTValue) {
+		SGSTValue = sGSTValue;
+	}
+
+	public Integer getIGSTValue() {
+		return IGSTValue;
+	}
+
+	public void setIGSTValue(Integer iGSTValue) {
+		IGSTValue = iGSTValue;
+	}
 
 	public BigDecimal getTaxableValue() {
 		return taxableValue;

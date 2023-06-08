@@ -356,7 +356,7 @@ $(document).ready(function() {
 		var experiencecontent = '<div class="links-cont-discount">' +
 			'<div class="service-amount">' +
 				'<a  class="service-trash-one"><i class="fa fa-minus-circle me-1"></i>Discount</a> ' +
-			'<input style="width:20vh;" onblur="javascript:discountOnTotal(\''+discountontotal+'\')" id="discountOnTotal'+discountontotal+'"'+
+			'<input style="width:20vh;" onchange="calculateTotalAmount()"  id="discountOnTotal'+discountontotal+'"'+
 			'value="" type="text" class="form-control"> </div>' +
 		'</div>';
 		
@@ -596,23 +596,27 @@ $(document).on("click",".add-links1",function () {
     var experiencecontent = '<div class="links-cont">' +
         '<div class="service-amount">' +
             '<a  class="service-trash1"><i class="fa fa-minus-circle me-1"></i>Service Charge</a> ' +
-        '<input style="width:20vh;" onblur="javascript:serviceOnTotal(\''+servicelen+'\')" '+
-        'type="text" id="servicecharge'+servicelen+'" value="" class="form-control"> </div>' +
+        '<input style="width:20vh;" onChange="calculateTotalAmount()" type="text" id="servicecharge'+servicelen+'" value="" class="form-control"> </div>' +
     '</div>';
     
     $(".links-info-one").append(experiencecontent);
+    
     return false;
 });
 $(".links-info-one").on('click','.service-trash1', function () {
     $(this).closest('.links-cont').remove();
-    rmvServOnTotandrmvDisOnTot();
+    setTimeout(()=>{
+    	calculateTotalAmount();
+    },1)
     return false;
 });
 
 
  $(".links-info-discount").on('click','.service-trash-one', function () {
     $(this).closest('.links-cont-discount').remove();
-    rmvServOnTotandrmvDisOnTot();
+    setTimeout(()=>{
+    	calculateTotalAmount();
+    },1)
     return false;
 });
 

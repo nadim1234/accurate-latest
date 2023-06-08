@@ -588,7 +588,7 @@
 						</div>
 					</div>
 					<!-- /Page Header -->
-					
+					<s:form action="saveInvoice.action" method="get" theme="simple">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="card invoices-add-card">
@@ -600,8 +600,10 @@
 													<div class="form-group">
 														<label>Customer Name</label>
 														<div class="form-group">
-														     <input type="hidden" name="invoiceDO.customerName" id="custname"/>         
+														     <input type="hidden" name="invoiceDO.customerName" id="custname"/> 
+														     <input type="hidden" id="custId" name=""/>      
 															 <select id="custnameselected" onchange ="custNameSelected();" class="select ">
+															 
 																<s:iterator value="invoiceDO.customerList">
                                                                   <option value="<s:property value="customerId"/>"> 
                                                                    <s:property value="customerName"/> </option>
@@ -620,7 +622,7 @@
 													<div class="invoice-details-box">
 														<div class="invoice-inner-head">
 															<span>Invoice No. <a id="invoiceNo" href="#">
-															<input type="text" style="border:none;cursor: pointer;" name="invoiceDO.invoiceNo" value="<s:property value="invoiceDO.invoiceNo"/>"></a></span>
+															<input type="text" style="border:none;cursor: pointer;" name="invoiceDO.invoiceNo" value="<s:property value="invoiceDO.invoiceNo"/>">   </a></span>
 														</div>
 														<div class="invoice-inner-footer">
 															<div class="row align-items-center">
@@ -630,6 +632,7 @@
 																			Date <input class="form-control datetimepicker" id="invoiceDate" type="text" name="invoiceDO.invoiceDate" 
 																			value="<s:property value="invoiceDO.invoiceDate"/>"
 																			 placeholder="<s:property value="invoiceDO.invoiceDate"/>">
+										
 																		</span>
 																	</div>
 																</div>
@@ -687,7 +690,7 @@
 												<div class="col-xl-4 col-lg-6 col-md-6">
 													<div class="invoice-info">
 														<strong class="customer-text">Invoice From <a class="small" href="edit-invoice.html">Edit Address</a></strong>
-														<input type="hidden" name="invoiceDO.BillingAddress" id="invoiceFromHiddenId"/>
+														<input type="hidden" id="invoiceFromHiddenId" name="invoiceDO.BillingAddress"/> 
 														<p id="invoiceFrom" class="invoice-details invoice-details-two">
 															
 														</p>
@@ -696,7 +699,7 @@
 												<div class="col-xl-4 col-lg-6 col-md-6">
 													<div class="invoice-info">
 														<strong class="customer-text">Invoice To</strong>
-														<input type="hidden" name="invoiceDO.shippingAddress" id="invoiceToHiddenId"/>
+														<input type="hidden" id="invoiceToHiddenId" name="invoiceDO.shippingAddress"/>
 														<p id="invoiceTo" class="invoice-details invoice-details-two">
 															
 														</p>
@@ -723,8 +726,7 @@
 														<tr class="add-row">
 															<td>
 																<div class="form-group">
-																  <input type="hidden" id="productName" name="invoiceDO.invoiceProductDO.invoiceProductId" />
-																  <input type="hidden" id="productName" name="invoiceDO.invoiceProductDO.productName" />
+																  
 																		<select class="select" id="selectedproduct" onchange="selectedProduct();">
 																			
 																			<s:iterator value="invoiceDO.productList">
@@ -735,19 +737,20 @@
 																	</div>
 															</td>
 															<td>
-																<input type="text" id="category" name="invoiceDO.invoiceProductDO.category" class="form-control">
+																<input type="text" id="category"  class="form-control">
 															</td>
 															<td>
-																<input type="text" id="quantity" name="invoiceDO.invoiceProductDO.quantity" onblur="javascript:calculateAmtonQuantity();" class="form-control">
+																<input type="text" id="quantity" onblur="javascript:calculateAmtonQuantity();" class="form-control">
+																<input type="hidden" id="applicableTax"/>
 															</td>
 															<td>
-																<input type="text" id="rate" name="invoiceDO.invoiceProductDO.rate" class="form-control">
+																<input type="text" id="rate" onblur="javascript:calculateAmtOnRate();"  class="form-control">
 															</td>
 															<td>
-																<input type="text" id="amount" name="invoiceDO.invoiceProductDO.amount" class="form-control">
+																<input type="text" id="amount" class="form-control" readonly>
 															</td>
 															<td>
-																<input type="text" id="discount" name="invoiceDO.invoiceProductDO.discount" onblur="javascript:calAmountOnDiscount();" class="form-control">
+																<input type="text" id="discount" onblur="javascript:calAmountOnDiscount();" class="form-control">
 															</td>
 															<td class="add-remove text-end">
 																<a href="javascript:addproduct();" class="add-btns me-2"><i class="fas fa-plus-circle"></i></a> 
@@ -810,7 +813,7 @@
 													<h4 class="invoice-total-title">Summary</h4>
 													<div class="invoice-total-box">
 														<div class="invoice-total-inner">
-															<p>Taxable Amount <span id="taxableAmount">0</span><input type="hidden" class="form-control" name="invoiceDO.taxableValue"></p>
+															<p>Taxable Amount <span id="taxableAmount">0</span><input id="taxableAmountinput" type="hidden" class="form-control" value="" name="invoiceDO.taxableValue"></p>
 															<p>Round Off 
 																<input type="checkbox" id="status_1" class="check">
 																<label for="status_1" class="checktoggles">checkbox</label> 
@@ -833,10 +836,11 @@
 																		<i class="fas fa-plus-circle me-1"></i> Add more Discount
 																	</a>
 																</div>
-															</div>
+															</div>	
+															<div id="sgstDivContainer" style="margin-top:20px">
 														</div>
 														<div class="invoice-total-footer">
-															<h4>Total Amount <input type="text" id="totalamount" class="form-control" name="invoiceDO.taxableValue"></h4>
+															<h4>Total Amount <input type="text" id="totalamount" class="form-control" name="invoiceDO.invoiceValue"></h4>
 														</div>
 													</div>
 												</div>
@@ -849,7 +853,7 @@
 														<input type="text" class="form-control" placeholder="Name of the Signatuaory">
 													</div>
 													<div class="form-group float-end mb-0">
-														<button class="btn btn-primary" onclick="saveInvoice();"  type="submit">Save Invoice</button>
+														<button class="btn btn-primary">Save Invoice</button>
 													</div>
 												</div>
 											</div>
@@ -859,6 +863,7 @@
 							</div>
 						</div>
 					</div>
+					</s:form>
 				</div>
 			</div>
 			<!-- /Page Wrapper -->
@@ -1351,11 +1356,12 @@
 		<!-- Custom JS -->
 		<script src="assets/js/app.js"></script>
          <script >
-         
+         var gstTrack=[];
         function custNameSelected (){
         	 var custId = document.getElementById("custnameselected").value;
         	 console.log("called custnameseleted : "+custId);
-        	 $("#custname").val(custname);
+        	 $("#custname").val($("#custnameselected option:selected").text().trim());
+        	 $("#custId").val(custId);
         	 $.ajax({
         		url : "getCustomerAddress.action",
         		type : "POST",
@@ -1365,7 +1371,28 @@
         			if(data != ""){
         			document.getElementById('invoiceFrom').innerHTML = JSON.parse(data)["invoiceFrom"];
         			document.getElementById('invoiceTo').innerHTML = JSON.parse(data)["invoiceTo"];
-        			console.log("successfully fetched address details of customer");
+        			$("#invoiceFromHiddenId").val(JSON.parse(data)["invoiceFrom"]);
+        			$("#invoiceToHiddenId").val(JSON.parse(data)["invoiceTo"]);
+        			
+        			console.log("successfully fetched address details of customer state "+JSON.parse(data)["state"]);
+        			
+        			/* if("abc" == "abc"){
+        				/* if($("#igstdiv").css("display") == "none") */
+        				/*	$("#igstdiv").css("display","block");
+        				    $("#sgstdiv").css("display","none");
+        				    $("#igstinput").val(9);
+        				    $("#cgstinput").val(9);
+        				    $("#sgstinput").val(0);
+        				 else
+        					$("#igstdiv").css("display","none") */
+        		/*	}else{
+        				$("#igstdiv").css("display","none");
+    				    $("#sgstdiv").css("display","block");
+    				    $("#igstinput").val(0);
+    				    $("#cgstinput").val(0);
+    				    $("#sgstinput").val(18);
+        			} */
+        			
         			}else {
         				console.log("something is wrong address got null");
         			}
@@ -1389,13 +1416,14 @@
             			$("#rate").val(JSON.parse(data)["productAmount"]);
             			$("#category").val(JSON.parse(data)["Category"]);
             			$("#quantity").val(JSON.parse(data)["Unit"]);
+            			$("#applicableTax").val(JSON.parse(data)["ApplicableTax"]);
             			var quantity = parseFloat($("#quantity").val());
-            			var discount = parseFloat($("#discount").val());
-            			 if(JSON.parse(data)["productAmount"] != null && quantity != null && discount != null){
-            				var amount = quantity * parseFloat(JSON.parse(data)["productAmount"]);
+            			var discount = $("#discount").val();
+            			 if(JSON.parse(data)["productAmount"] != null && JSON.parse(data)["Unit"] != null && discount != '' ){
+            				var amount = JSON.parse(data)["Unit"] * parseFloat(JSON.parse(data)["productAmount"]);
             				$("#amount").val((amount - ( amount * discount / 100 )).toFixed(2));
-            			    }else if(JSON.parse(data)["productAmount"] != null && quantity != null){
-            				   $("#amount").val((quantity * parseFloat(JSON.parse(data)["productAmount"])).toFixed(2));
+            			    }else if(JSON.parse(data)["productAmount"] != null && JSON.parse(data)["Unit"] != null){
+            				   $("#amount").val((JSON.parse(data)["Unit"] * parseFloat(JSON.parse(data)["productAmount"])).toFixed(2));
             			   }
             			}else {
             				console.log("something is wrong amount got null");
@@ -1444,76 +1472,385 @@
         	 
          }
          
+         function calculateTaxabeAmountBasedOnAddedProducts(){
+        	 var amount=0;
+        	 var prodtable = $("#prodTable");
+        	 var tlen = $("#prodTable tr").length-2;
+        	 for(var i = 0;i<tlen;i++){
+        		 var temp=$("#amount"+i).val();
+        		 if(temp!=undefined && temp!=null && temp.trim()!='' && temp>0)
+        		 	amount+=Math.round($("#amount"+i).val())
+        	 } 
+        	 document.getElementById('taxableAmount').innerHTML = amount; 
+        	 $("#taxableAmountinput").val(amount);
+         }
+         
          function addproduct(){
         	 var prodtable = $("#prodTable");
         	 var tlen = $("#prodTable tr").length-2;
         	 
+        	 
         	console.log("tlen   ::"+tlen);
+      	  var totaltaxablevalue = Math.round($("#amount").val());
+    	  
+    	  if(totaltaxablevalue==undefined || totaltaxablevalue==null || totaltaxablevalue.trim=='')
+    		  return;
+    	  
         	 prodtable.append('<tr class="add-row">'+
-        	 '<td>'+document.getElementById("selectedproduct").value +'</td>'
-        	 +'<input type="hidden" id="productName'+tlen+'" name="invoiceDO.invoiceProductDO.productName['+tlen+']" value="'+document.getElementById("selectedproduct").value+'">'
-        	 +'<input type="hidden" id="invoiceProductId'+tlen+'" name="invoiceDO.invoiceProductDO.invoiceProductId['+tlen+']" value="'+2+'"></td>'
-        	 +'<td>'+$("#category").val()+'<input type="hidden" id="category'+tlen+'" name="invoiceDO.invoiceProductDO.category['+tlen+']" value="'+$("#category").val()+'"></td>'
-        	 +'<td>'+$("#quantity").val() + '<input type="hidden" id="quantity'+tlen+'" name="invoiceDO.invoiceProductDO.quantity['+tlen+']" value="'+$("#quantity").val()+'"></td>'
-        	 +'<td>'+$("#rate").val() + '<input type="hidden" id="rate'+tlen+'" name="invoiceDO.invoiceProductDO.rate['+tlen+']" value="'+$("#rate").val()+'"></td>'
-        	 +'<td>'+$("#amount").val() +'<input type="hidden" id="amount'+tlen+'" name="invoiceDO.invoiceProductDO.amount['+tlen+']" value="'+$("#amount").val()+'"></td>'
-        	 +'<td>'+$("#discount").val()+'<input type="hidden" id="discount'+tlen+'" name="invoiceDO.invoiceProductDO.discount['+tlen+']" value="'+$("#discount").val()+'"></td>'
+        	/*  '<td>'+$("#selectedproduct option:selected").text().trim() +'</td>'
+        	 +'<input type="hidden" id="productName'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].productName" value="'+$("#selectedproduct option:selected").text().trim()+'">'
+        	 +'<input type="hidden" id="invoiceProductId'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].invoiceProductId" value="'+document.getElementById("selectedproduct").value+'"></td>'
+        	 +'<td>'+$("#category").val()+'<input type="hidden" id="category'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].category" value="'+$("#category").val()+'"></td>'
+        	 +'<td>'+$("#quantity").val() + '<input type="hidden" id="quantity'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].quantity" value="'+$("#quantity").val()+'"></td>'
+        	 +'<td>'+$("#rate").val() + '<input type="hidden" id="rate'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].rate" value="'+$("#rate").val()+'"></td>'
+        	 +'<td>'+$("#amount").val() +'<input type="hidden" id="amount'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].amount" value="'+$("#amount").val()+'"></td>'
+        	 +'<td>'+$("#discount").val()+'<input type="hidden" id="discount'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].discount" value="'+$("#discount").val()+'"></td>'
+        	 +'<td class="add-remove text-end"> <a onclick="javascript:removeProd(\''+$("#amount").val()+'\');" class="remove-btn"><i class="fa fa-trash-alt"></i></a></td>'); */
+        	 
+        	 '<td>'+$("#selectedproduct option:selected").text().trim() +'</td>'
+        	 +'<input type="hidden"  id="productName'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].productName" value="'+$("#selectedproduct option:selected").text().trim()+'">'
+        	 +'<input type="hidden" id="invoiceProductId'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].invoiceProductId" value="'+document.getElementById("selectedproduct").value+'"></td>'
+        	 +'<td><input type="text" class="form-control" id="category'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].category" value="'+$("#category").val()+'"></td>'
+        	 +'<td><input type="text" onBlur="javascript:calculateAmtonQuantityProd(\''+tlen+'\')" class="form-control" id="quantity'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].quantity" value="'+$("#quantity").val()+'"><input type="hidden" id="applicableTax'+tlen+'" value="'+$("#applicableTax").val()+'"></td>'
+        	 +'<td><input type="text" onBlur="javascript:calculateAmtOnRateProd(\''+tlen+'\')" class="form-control" id="rate'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].rate" value="'+$("#rate").val()+'"></td>'
+        	 +'<td><input type="text" class="form-control" id="amount'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].amount" value="'+$("#amount").val()+'" readonly></td>'
+        	 +'<td><input type="text" onBlur="javascript:calAmountOnDiscountProd(\''+tlen+'\')" class="form-control" id="discount'+tlen+'" name="invoiceDO.invoiceProductDOs['+tlen+'].discount" value="'+$("#discount").val()+'"></td>'
         	 +'<td class="add-remove text-end"> <a onclick="javascript:removeProd(\''+$("#amount").val()+'\');" class="remove-btn"><i class="fa fa-trash-alt"></i></a></td>');
         	 
-        	  var totaltaxablevalue = parseFloat($("#amount").val());
+        
+        	  
         	 console.log("totaltaxable "+totaltaxablevalue);
         	  for(var i = 0;i<tlen;i++){
-        		 console.log("inside for loop "+totaltaxablevalue);
-        		 totaltaxablevalue = totaltaxablevalue + parseFloat($("#amount"+i).val());
+        		 var amount=$("#amount"+i).val();
+        		 if(amount!=undefined && amount!=null && amount.trim()!='' && amount>0)
+        		 totaltaxablevalue = totaltaxablevalue + Math.round(amount);
         	 } 
-        	  totaltaxablevalue = (totaltaxablevalue + ( totaltaxablevalue * 18 / 100 )).toFixed(2);
+        	  //totaltaxablevalue = (totaltaxablevalue + ( totaltaxablevalue * 18 / 100 )).toFixed(2);
         	 document.getElementById('taxableAmount').innerHTML = totaltaxablevalue; 
+        	 $("#taxableAmountinput").val(totaltaxablevalue);
+        	/*  if($("#igstdiv").css('display') == 'none'){
+        		 
+        		 totaltaxablevalue = (totaltaxablevalue + ( totaltaxablevalue * 18 / 100 )).toFixed(2);
+            	 $("#totalamount").val(totaltaxablevalue);
+        		 
+        	 }else {
+             totaltaxablevalue = (totaltaxablevalue + ( totaltaxablevalue * 9 / 100 )).toFixed(2);
+             totaltaxablevalue = (totaltaxablevalue + ( totaltaxablevalue * 9 / 100 )).toFixed(2);
         	 $("#totalamount").val(totaltaxablevalue);
+        	 } */
+        	 
+        	 var applicableTax=$("#applicableTax").val();
+    		 
+    		 if(applicableTax==null || applicableTax==undefined || applicableTax=='') return;
+    		 
+    		 applicableTax=Math.round(applicableTax);
+    		 
+    		 var sgst=applicableTax/2;
+    		 var cgst=applicableTax/2;
+    		 
+    		 if(gstTrack.includes(sgst)){
+    			 var amount=$("#amount").val();
+    			 var tax=Math.round(amount*(sgst/100));
+    			 var temp=Math.round($("#sgstDiv"+sgst+" #sgstVal input").val());
+    			 $("#sgstDiv"+sgst+" #sgstVal input").val(temp+tax);
+    			 
+    			 temp=Math.round($("#sgstDiv"+sgst+" #cgstVal input").val());
+    			 $("#sgstDiv"+sgst+" #cgstVal input").val(temp+tax);
+    			 
+    		 }else{
+    			 gstTrack.push(sgst);
+    			 var amount=$("#amount").val();
+    			 var tax=Math.round(amount*(sgst/100));
+    			 var sgstDiv='<div id="sgstDiv'+sgst+'" style="margin:10px 0px;"><p >SGST@ '+sgst+'% <span id="sgstVal"><input type="text" style="border:1px solid #e3e3e3; width:80px;height:40px; border-radius:3px;"  id="sgstInput" name="invoiceDO.IGSTValue" value="'+tax+'" readonly></span></p><p  style="margin:25px 0px;">CGST@ '+sgst+'% <span id="cgstVal"><input type="text" style="border:1px solid #e3e3e3; width:80px;height:40px; border-radius:3px;" id="cgstInput" name="invoiceDO.CGSTValue" value="'+tax+'" readonly></span></p></div>'
+    			 $("#sgstDivContainer").append(sgstDiv);
+    		 }
+    		 calculateTotalAmount();
+        	 
          }
          
-         function calculateAmtonQuantity(){
+         function calculateAmtonQuantityProd(tlen){
         	 console.log("inside calculateAmtonQuantity function");
-        	 var quantity = parseInt($("#quantity").val());
-        	 var rate = parseInt($("#rate").val());
-        	 console.log("inside calculateAmtonQuantity values"+quantity +"rate"+rate);
-        	 if((quantity != null || quantity != undefined) && rate != null || rate != undefined){
-        	 var amount = quantity * rate.toFixed(2);
-        	 $("#amount").val(amount);
+        	 
+        	 var quantity = $("#quantity"+tlen).val();
+        	 if(quantity!=undefined && quantity!=null && quantity.trim()!='' && testRegex(quantity) && parseInt(quantity)>=1){
+        		 quantity=Math.round(quantity);
+        		 $("#quantity"+tlen).val(quantity);
+        	 }else{
+        		 alert("Please enter valid quantity");
+        		 $("#quantity"+tlen).val('');
+        		 $("#amount"+tlen).val('');
+        		 return;
+        	 }
+        	 var rate = $("#rate"+tlen).val();
+        	 if(rate!=undefined && rate!=null && rate.trim()!='' && testRegex(rate)){
+        		/*  rate=Math.round(rate);
+        		 $("#rate"+tlen).val(rate);
+        		 var amount = quantity * rate;
+            	 $("#amount"+tlen).val(amount); */
+            	 calAmountOnDiscountProd(tlen)
         	 }
         	 
          }
-         function calAmountOnDiscount(){
+         
+         function calculateAmtOnRateProd(tlen){
+        	 console.log("inside calculateAmtOnRate function");
+        	 var quantity = $("#quantity"+tlen).val();
+        	 if(quantity!=undefined && quantity!=null && quantity.trim()!='' && testRegex(quantity) && parseInt(quantity)>=1){
+        		 quantity=Math.round(quantity);
+        		 $("#quantity"+tlen).val(quantity);
+        	 }else{
+        		 $("#quantity"+tlen).val('');
+        		 $("#amount"+tlen).val('');
+        		 return;
+        	 }
+        	 var rate = $("#rate"+tlen).val();
+        	 if(rate!=undefined && rate!=null && rate.trim()!='' && testRegex(rate)){
+        		/*  rate=Math.round(rate);
+        		 $("#rate"+tlen).val(rate);
+        		 var amount = quantity * rate;
+            	 $("#amount"+tlen).val(amount);
+            	 calculateTaxabeAmountBasedOnAddedProducts(); */
+        		 calAmountOnDiscountProd(tlen);
+        	 
+        	 }else{
+        		 $("#rate"+tlen).val('');
+        		 $("#amount"+tlen).val('');
+        	 }
+        	 
+        	 
+         }
+         
+         function calAmountOnDiscountProd(tlen){
         	 console.log("inside calAmountOnDiscount function");
-        	 var quantity = parseInt($("#quantity").val());
-        	 var rate = parseInt($("#rate").val());
+        	 var quantity = $("#quantity"+tlen).val();
+        	 if(quantity!=undefined && quantity!=null && quantity.trim()!='' && testRegex(quantity) && parseInt(quantity)>=1){
+        		 quantity=Math.round(quantity);
+        		 $("#quantity"+tlen).val(quantity);
+        	 }else{
+        		 $("#quantity"+tlen).val('');
+        		 $("#amount"+tlen).val('');
+        		 $("#discount"+tlen).val(0);
+        		 return;
+        	 }
+        	 var rate = $("#rate"+tlen).val();
+        	 if(rate!=undefined && rate!=null && rate.trim()!='' && testRegex(rate)){
+        		 rate=Math.round(rate);
+        		 $("#rate"+tlen).val(rate);
+        	 }else{
+        		 $("#rate"+tlen).val('');
+        		 $("#amount"+tlen).val('');
+        		 $("#discount"+tlen).val(0);
+        		 return;
+        	 }
         	 var amount = quantity * rate;
-        	 var discount = parseInt($("#discount").val());
+        	 var discount = $("#discount"+tlen).val();
+        	 if(discount!=null && discount!=undefined && discount.trim()!='' && testRegex(discount)){
+        		 discount=Math.round(discount);
+        		 $("#discount"+tlen).val(discount);
+        	 }else{
+        		 $("#discount"+tlen).val(0);
+        		discount=0;
+        	 }
         	 console.log("inside calAmountOnDiscount values"+amount +"discount"+discount);
         	 if((amount !=null && amount != undefined) && (discount != null || discount != undefined)){
-        		 $("#amount").val((amount - ( amount * discount / 100 )).toFixed(2));
+        		 $("#amount"+tlen).val(Math.round(amount - ( amount * discount / 100 )));
+        		 
+        		 
+        		 var prodtable = $("#prodTable");
+            	 var lent = $("#prodTable tr").length-2;
+            	 
+            	 for(var i=0;i<gstTrack.length;i++){
+            		 var sgst=gstTrack[i];
+            		 $("#sgstDiv"+sgst+" #sgstVal input").val(0)
+            		 $("#sgstDiv"+sgst+" #cgstVal input").val(0);
+            	 }
+            	 
+            	 for(var i = 0;i<lent;i++){
+        		 var applicableTax=$("#applicableTax"+i).val();
+        		 
+        		 if(applicableTax==null || applicableTax==undefined || applicableTax=='') return;
+        		 
+        		 applicableTax=Math.round(applicableTax);
+        		 
+        		 var sgst=applicableTax/2;
+        		 var cgst=applicableTax/2;
+        		 
+        		 if(gstTrack.includes(sgst)){
+        			 var amount=$("#amount"+i).val();
+        			 var tax=Math.round(amount*(sgst/100));
+        			 var temp=Math.round($("#sgstDiv"+sgst+" #sgstVal input").val());
+        			 $("#sgstDiv"+sgst+" #sgstVal input").val(temp+tax);
+        			 
+        			 temp=Math.round($("#sgstDiv"+sgst+" #cgstVal input").val());
+        			 $("#sgstDiv"+sgst+" #cgstVal input").val(temp+tax);
+        			 
+        		 }
+            	 }
+        		 
+        		 calculateTaxabeAmountBasedOnAddedProducts();
+        		 calculateTotalAmount();
+        	 }
+         }
+         
+         
+         function calculateAmtonQuantity(){
+        	 console.log("inside calculateAmtonQuantity function");
+        	 
+        	 var quantity = $("#quantity").val();
+        	 if(quantity!=undefined && quantity!=null && quantity.trim()!='' && testRegex(quantity) && parseInt(quantity)>=1){
+        		 quantity=Math.round(quantity);
+        		 $("#quantity").val(quantity);
+        	 }else{
+        		 alert("Please enter valid quantity");
+        		 $("#quantity").val('');
+        		 $("#amount").val('');
+        		 return;
+        	 }
+        	 var rate = $("#rate").val();
+        	 if(rate!=undefined && rate!=null && rate.trim()!='' && testRegex(rate)){
+        		 /* rate=Math.round(rate);
+        		 $("#rate").val(rate);
+        		 var amount = quantity * rate;
+            	 $("#amount").val(amount); */
+        		 calAmountOnDiscount();
+        	 
+        	 }
+        	 
+         }
+         function calculateAmtOnRate(){
+        	 console.log("inside calculateAmtOnRate function");
+        	 var quantity = $("#quantity").val();
+        	 if(quantity!=undefined && quantity!=null && quantity.trim()!='' && testRegex(quantity) && parseInt(quantity)>=1){
+        		 quantity=Math.round(quantity);
+        		 $("#quantity").val(quantity);
+        	 }else{
+        		 $("#quantity").val('');
+        		 $("#amount").val('');
+        		 if(!testRegex(rate))
+        			 $("#rate").val('');
+        		 return;
+        	 }
+        	 var rate = $("#rate").val();
+        	 if(rate!=undefined && rate!=null && rate.trim()!='' && testRegex(rate)){
+        		 /* rate=Math.round(rate);
+        		 $("#rate").val(rate);
+        		 var amount = quantity * rate;
+            	 $("#amount").val(amount); */
+        		 calAmountOnDiscount()
+        	 }else{
+        		 $("#rate").val('');
+        		 $("#amount").val('');
+        	 }
+        	 
+        	 
+         }
+         
+         function calAmountOnDiscount(){
+        	 console.log("inside calAmountOnDiscount function");
+        	 var quantity = $("#quantity").val();
+        	 if(quantity!=undefined && quantity!=null && quantity.trim()!='' && testRegex(quantity) && parseInt(quantity)>=1){
+        		 quantity=Math.round(quantity);
+        		 $("#quantity").val(quantity);
+        	 }else{
+        		 $("#quantity").val('');
+        		 $("#amount").val('');
+        		 $("#discount").val(0);
+        		 return;
+        	 }
+        	 var rate = $("#rate").val();
+        	 if(rate!=undefined && rate!=null && rate.trim()!='' && testRegex(rate)){
+        		 rate=Math.round(rate);
+        		 $("#rate").val(rate);
+        	 }else{
+        		 $("#rate").val('');
+        		 $("#amount").val('');
+        		 $("#discount").val(0);
+        		 return;
+        	 }
+        	 var amount = quantity * rate;
+        	 var discount = $("#discount").val();
+        	 if(discount!=null && discount!=undefined && discount.trim()!='' && testRegex(discount)){
+        		 discount=Math.round(discount);
+        		 $("#discount").val(discount);
+        	 }else{
+        		 $("#discount").val(0);
+        		discount=0;
+        	 }
+        	 console.log("inside calAmountOnDiscount values"+amount +"discount"+discount);
+        	 if((amount !=null && amount != undefined) && (discount != null || discount != undefined)){
+        		 $("#amount").val(Math.round(amount - ( amount * discount / 100 )));
         	 }
          }
          
          function removeProd(amount){
         	 console.log("inside removeprod loop :"+amount);
-        	  var totaltaxableval = (parseFloat($("#taxableAmount").text().trim()) - parseFloat(amount) - ( amount * 18 / 100 )).toFixed(2);
+        	 /* var totaltaxableval = (parseFloat($("#taxableAmount").text().trim()) - parseFloat(amount) - ( amount * 18 / 100 )).toFixed(2); */
+        	 var totaltaxableval=$("#taxableAmount").text()
+        	 if(totaltaxableval!=null && totaltaxableval!=undefined && totaltaxableval!='' && amount!=undefined && amount!=null && amount!=''){
+        	 totaltaxableval=Math.round(totaltaxableval)-Math.round(amount);
         	 document.getElementById('taxableAmount').innerHTML = totaltaxableval; 
+        	 $("#taxableAmountinput").val(totaltaxableval);
         	 $("#totalamount").val(totaltaxableval);
+        	 
+        	 //calculate SGST and CGST again
+        	 setTimeout(()=>{
+        	 var prodtable = $("#prodTable");
+        	 var lent = $("#prodTable tr").length-2;
+        	 
+        	 for(var i=0;i<gstTrack.length;i++){
+        		 var sgst=gstTrack[i];
+        		 $("#sgstDiv"+sgst+" #sgstVal input").val(0)
+        		 $("#sgstDiv"+sgst+" #cgstVal input").val(0);
+        	 }
+        	 
+        	 for(var i = 0;i<lent;i++){
+    		 var applicableTax=$("#applicableTax"+i).val();
+    		 
+    		 if(applicableTax==null || applicableTax==undefined || applicableTax=='') return;
+    		 
+    		 applicableTax=Math.round(applicableTax);
+    		 
+    		 var sgst=applicableTax/2;
+    		 var cgst=applicableTax/2;
+    		 
+    		 if(gstTrack.includes(sgst)){
+    			 var amount=$("#amount"+i).val();
+    			 var tax=Math.round(amount*(sgst/100));
+    			 var temp=Math.round($("#sgstDiv"+sgst+" #sgstVal input").val());
+    			 $("#sgstDiv"+sgst+" #sgstVal input").val(temp+tax);
+    			 
+    			 temp=Math.round($("#sgstDiv"+sgst+" #cgstVal input").val());
+    			 $("#sgstDiv"+sgst+" #cgstVal input").val(temp+tax);
+    			 
+    		 }
+        	 }
+        	 calculateTotalAmount();
+        	 },1);
+        	 }
          }
          
          function serviceOnTotal(serviceamountid){
         	 console.log("service charge field id :"+serviceamountid);
-        	 var serviceamount = parseFloat($("#servicecharge"+serviceamountid).val());
+        	 var serviceamount = $("#servicecharge"+serviceamountid).val();
         	 var total = parseFloat($("#totalamount").val());
-        	 $("#totalamount").val(total + serviceamount);
+        	 console.log("service charge total :"+serviceamount);
+        	 if(serviceamount != ""){
+        	 $("#totalamount").val(total + parseFloat(serviceamount));
+        	 }else{
+        		 rmvServOnTotandrmvDisOnTot();
+        	 }
         	 
          }
          
           function discountOnTotal(discountid){
         	  console.log("Discount amount id :"+discountid);
-        	  var discount = parseFloat($("#discountOnTotal"+discountid).val());
+        	  var discount = $("#discountOnTotal"+discountid).val();
         	  var total = parseFloat($("#totalamount").val());
-        	  $("#totalamount").val((total - (total * discount / 100 )).toFixed(2));
+        	  if(discount != ""){
+        	  $("#totalamount").val((total - (total * parseFloat(discount) / 100 )).toFixed(2));
+        	  }else{
+        		  rmvServOnTotandrmvDisOnTot();
+        	  }
           }
           
                    
@@ -1521,21 +1858,106 @@
         	  console.log("rmvservntot ");
         	  var totalAmount = 0;
         	  var taxableval = parseFloat($("#taxableAmount").text().trim());
+        	  if($("#igstdiv").css('display') == 'none'){
+         		 
+        		  taxableval = (taxableval + ( taxableval * 18 / 100 )).toFixed(2);
+             	
+         		 
+         	 }else {
+         		taxableval = (taxableval + ( taxableval * 9 / 100 )).toFixed(2);
+         		taxableval = (taxableval + ( taxableval * 9 / 100 )).toFixed(2);
+         	 
+         	 }
         	  var servicecharge = 0;
         	  $(".links-info-one input").each(function (index){
         		  console.log("inside loop of rmvservtax :"+index +" values of service:"+$(this).val());
+        		  if($(this).val() != "")
         		  servicecharge = servicecharge + parseFloat($(this).val());
         	  });
         	  totalAmount = taxableval + servicecharge;
         	  var totalDiscount = 0;
         	  $(".links-info-discount input").each(function (index){
         		  console.log("inside loop of rmvservtax :"+index +"value of discount :"+$(this).val());
+        		  if($(this).val() != "")
         		  totalAmount = (totalAmount - (totalAmount * parseFloat($(this).val()) / 100 )).toFixed(2);
         	  });
         	  
         	  $("#totalamount").val(totalAmount);
         	  
           }
+          
+          function testRegex(a){
+        	  var reg = /^-?\d+\.?\d*$/;
+        	  var regxp=new RegExp(reg);
+        	  return regxp.test(a);
+          }
+          
+         
+        $("#custnameselected").parent().click(()=>{
+        	  $("#select2-custnameselected-results").prepend("<input onkeyup='javascript:filterNames(this,\"select2-custnameselected-results\")' style='' type='text' class='form-control' placeholder='Please Enter Customer Name'/>")
+        })
+        
+        $("#selectedproduct").parent().click(()=>{
+        $("#select2-selectedproduct-results").prepend("<input onkeyup='javascript:filterNames(this,\"select2-selectedproduct-results\")' style='' type='text' class='form-control' placeholder='Please Enter Name'/>")
+        })
+        
+        function filterNames(selectedInput,id){
+        	console.log(selectedInput.value);
+        	$("#"+id+" li").map((a,b)=>{
+    	        b.style.display='block';
+    		})
+        	if(selectedInput.value.trim()=='')
+        		$("#"+id+" li").map((a,b)=>{
+	        	        b.style.display='block';
+	        	})
+        	else
+        		$("#"+id+" li").map((a,b)=>{
+            	    
+            	    if(!b.innerText.toLowerCase().includes(selectedInput.value.trim().toLowerCase())){
+            	        b.style.display='none';
+            	    }
+            	})
+        }
+        
+        function calculateTotalAmount(){
+        	var taxableAmt=Math.round($("#taxableAmount").text())
+        	var serviceCharge0=$("#servicecharge0").val()
+        	var serviceCharge1=$("#servicecharge1").val()
+        	var discount=$("#discountOnTotal0").val();
+        	
+        	if(serviceCharge0!=undefined && serviceCharge0!=null && serviceCharge0!=''){
+        		taxableAmt=taxableAmt+Math.round(serviceCharge0);
+        	}
+        	
+        	if(serviceCharge1!=undefined && serviceCharge1!=null && serviceCharge1!=''){
+        		taxableAmt=taxableAmt+Math.round(serviceCharge1);
+        	}
+        	
+        	if(discount!=undefined && discount!=null && discount!=''){
+        		taxableAmt=taxableAmt-Math.round(discount);
+        		if(taxableAmt<0) taxableAmt=0;
+        	}
+        	
+        	 for(var i=0;i<gstTrack.length;i++){
+        		 var sgst=gstTrack[i];
+        		taxableAmt=taxableAmt+Math.round($("#sgstDiv"+sgst+" #sgstVal input").val());
+        		taxableAmt=taxableAmt+Math.round($("#sgstDiv"+sgst+" #cgstVal input").val());
+        	 }
+        	 
+        	 if(taxableAmt!=undefined && taxableAmt>=0){
+        		 $("#totalamount").val(taxableAmt);
+        	 }
+        	 
+        	
+        		
+        }
+        
+       /*  $("[id^=servicecharge]").change(function()
+        {
+        	console.log("value changed");
+        }) */
+        
+       
          
        </script>
     </body>

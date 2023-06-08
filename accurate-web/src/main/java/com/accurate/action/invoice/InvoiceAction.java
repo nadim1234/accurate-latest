@@ -78,9 +78,7 @@ public class InvoiceAction extends ActionSupport {
 		this.invoiceDO = invoiceDO;
 	}
 
-
 	private Logger logger=Logger.getLogger(InvoiceAction.class);
-	
 	
 	
 	public List<InvoiceDO> getInvoiceList() {
@@ -153,8 +151,10 @@ public class InvoiceAction extends ActionSupport {
 			String [] addresstemp = address.split("~");
 			System.out.println("Successfuly got address :: "+addresstemp[0]);
 			System.out.println("Successfuly got shipping address :: "+addresstemp[1]);
+			System.out.println("Successfuly got state :: "+addresstemp[2]);
 			jsonobject.put("invoiceFrom",addresstemp[0] );
 			jsonobject.put("invoiceTo", addresstemp[1]);
+			jsonobject.put("state", addresstemp[2]);
 			response.getWriter().println(jsonobject);
 		}catch(Exception e) {
 			logger.error("Exception in InvoiceAction::getCustomerAddress()==>"+e);
@@ -185,6 +185,9 @@ public class InvoiceAction extends ActionSupport {
 			   if(productdetails.getUnit() != null) {
 				jsonobject.put("Unit", productdetails.getUnit());
 			   }
+			   if(productdetails.getApplicableTax()!=null) {
+				   jsonobject.put("ApplicableTax", productdetails.getApplicableTax());
+			   }
 			
 			
 			response.getWriter().println(jsonobject);
@@ -198,9 +201,10 @@ public class InvoiceAction extends ActionSupport {
 	
 	public String saveInvoice() {
 		logger.info("InvoiceAction :: saveInvoice :: start saveInvoice method");
+		System.out.println(invoiceDO.getCustomerName());
 		HttpServletRequest request = ServletActionContext.getRequest();
 		HttpServletResponse response = ServletActionContext.getResponse();
-		String custnameselected = request.getParameter("custnameselected");
+		/*String custnameselected = request.getParameter("custnameselected");
 		String poNumber = request.getParameter("poNumber");
 		String invoiceNo = request.getParameter("invoiceNo");
 		//String invoiceDate = request.getParameter("invoiceDate");
@@ -215,11 +219,11 @@ public class InvoiceAction extends ActionSupport {
 		double temptax = Double.parseDouble(request.getParameter("taxableAmount"));
 		Integer temptotal = Integer.parseInt(request.getParameter("totalamount"));
 		BigDecimal taxableAmount = new BigDecimal(temptax);
-		BigDecimal totalamount = new BigDecimal(temptotal);
+		BigDecimal totalamount = new BigDecimal(temptotal);*/
 		try {
 			
 			
-			InvoiceProductDO invoiceProductdo = new InvoiceProductDO();
+			/*InvoiceProductDO invoiceProductdo = new InvoiceProductDO();
 			invoiceDO.setInvoiceNo(invoiceNo);
 			invoiceDO.setPoNo(poNumber);
 			invoiceDO.setBillingAddress(invoiceFrom);
@@ -243,7 +247,7 @@ public class InvoiceAction extends ActionSupport {
 			invoiceProductdo.setUserId(362648);
 			List<InvoiceProductDO> prodList=new ArrayList<InvoiceProductDO>();
 			prodList.add(invoiceProductdo);
-			invoiceDO.setInvoiceProductDOs(prodList);
+			invoiceDO.setInvoiceProductDOs(prodList);*/
 			invoiceService.saveInvoice(invoiceDO);
 		//	System.out.println("invoicedo data :"+invoiceDO.getPoNo());
 		//	System.out.println("product rate "+invoiceDO.getInvoiceProductDO().getRate());

@@ -27,6 +27,19 @@ public class ProductDO {
 	
 	@Column(name = "Category")
 	String Category;
+	
+	@Column(name="applicable_tax")
+	String applicableTax;
+	
+	
+
+	public String getApplicableTax() {
+		return applicableTax;
+	}
+
+	public void setApplicableTax(String applicableTax) {
+		this.applicableTax = applicableTax;
+	}
 
 	public Integer getProductId() {
 		return productId;
